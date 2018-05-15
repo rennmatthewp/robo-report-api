@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "eslint": "./node_modules/.bin/eslint public/**/*.js server.js",
     "start": "node server.js",
     "test": "NODE_ENV=test mocha --exit"
   },
@@ -12,6 +13,7 @@
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.18.3",
+    "eslint": "^4.19.1",
     "express": "^4.16.3",
     "knex": "^0.14.6",
     "pg": "^7.4.3"
@@ -19,6 +21,8 @@
   "devDependencies": {
     "chai": "^4.1.2",
     "chai-http": "^4.0.0",
+    "eslint-config-airbnb-base": "^12.1.0",
+    "eslint-plugin-import": "^2.11.0",
     "mocha": "^5.1.1"
   }
 }
