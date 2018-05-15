@@ -8,6 +8,8 @@ exports.up = function(knex, Promise) {
 
 exports.down = function(knex, Promise) {
   return Promise.all([
-    knex.schema.dropTable('users')
+    knex.schema.alterTable('users', table => {
+      table.integer('zipcode').alter();
+    })
   ]);
 };
