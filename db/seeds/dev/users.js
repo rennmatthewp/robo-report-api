@@ -13,7 +13,7 @@ exports.seed = function(knex, Promise) {
           .insert(usersData, 'id')
           .then(user => {
             const complaints = complaintsData.map((complaint, index) => {
-              const user_id = user[index % 3];
+              const user_id = user[index % 25];
               return { ...complaint, user_id };
             });
             return knex('complaints').insert(complaints);
