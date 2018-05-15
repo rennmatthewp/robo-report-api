@@ -15,6 +15,15 @@ exports.up = function(knex, Promise) {
 
 exports.down = function(knex, Promise) {
   return Promise.all([
-    knex.schema.dropTable('complaints')
+    knex.schema.alterTable('complaints', table => {
+      table.string('isSoliciting').alter();
+      table.dropColumn('subject');
+      table.date('date').alter();
+      table.time('time').alter();
+      table.renameColumn('callerIdNumber', 'phone');
+      table.dropColumn('permissionGranted');
+      table.dropColumn('businessName');
+      table.dropColumn('agentName');
+    })
   ]);
 };
