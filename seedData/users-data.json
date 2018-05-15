@@ -1,0 +1,35 @@
+[
+  {
+    "email": "thedude@gmail.com",
+    "phone": "404-555-5555",
+    "phoneType": "Wireless",
+    "firstName": "Jeffery",
+    "lastName": "Lebowski",
+    "address": "1091 S Mesa Dr",
+    "city": "Los Angeles",
+    "state": "CA",
+    "zipcode": "90210"
+  },
+  {
+    "email": "walter@gmail.com",
+    "phone": "404-000-0000",
+    "phoneType": "Wireless",
+    "firstName": "Walter",
+    "lastName": "Sobchech",
+    "address": "1091 S Mesa Dr",
+    "city": "Los Angeles",
+    "state": "CA",
+    "zipcode": "90210"
+  },
+  {
+    "email": "donny@gmail.com",
+    "phone": "404-111-1111",
+    "phoneType": "Wireless",
+    "firstName": "Donny",
+    "lastName": "Kerabatsos",
+    "address": "1091 S Mesa Dr",
+    "city": "Los Angeles",
+    "state": "CA",
+    "zipcode": "90210"
+  }
+]
