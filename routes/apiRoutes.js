@@ -16,4 +16,14 @@ router.get('/users', (request, response) => {
     });
 });
 
+router.get('/complaints', (request, response) => {
+  database('complaints').select()
+    .then((complaints) => {
+      response.status(200).json(complaints);
+    })
+    .catch((error) => {
+      response.status(500).json({ error });
+    });
+});
+
 module.exports = { router, database };

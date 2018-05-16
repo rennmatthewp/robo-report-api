@@ -45,4 +45,30 @@ describe('API Routes', () => {
         done();
       });
   });
+
+  it('GET api/v1/complaints should return an array of complaints', (done) => {
+    chai.request(server)
+      .get('/api/v1/complaints')
+      .end((error, response) => {
+        response.should.have.status(200);
+        response.should.be.json;
+        response.body.should.be.an('array');
+        response.body.length.should.equal(32);
+        response.body[0].should.have.property('id', 1);
+        response.body[0].should.have.property('user_id', 1);
+        response.body[0].should.have.property('isSoliciting', true);
+        response.body[0].should.have.property('description', 'A woman wants to eliminate my credit card debt');
+        response.body[0].should.have.property('subject', 'Robocall');
+        response.body[0].should.have.property('callerIdNumber', '303-123-1234');
+        response.body[0].should.have.property('callerIdName', 'unknown');
+        response.body[0].should.have.property('date', '04/04/2018');
+        response.body[0].should.have.property('time', '5:00 PM');
+        response.body[0].should.have.property('type', 'Prerecorded Voice');
+        response.body[0].should.have.property('altPhone', '303-123-1234');
+        response.body[0].should.have.property('permissionGranted', false);
+        response.body[0].should.have.property('businessName', null);
+        response.body[0].should.have.property('agentName', null);
+        done();
+      });
+  });
 });
