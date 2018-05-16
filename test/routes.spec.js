@@ -1,11 +1,11 @@
 const chai = require('chai');
 const chaiHttp = require('chai-http');
-const { app, database } = require('../server');
+const { router, database } = require('../routes/apiRoutes');
 
 chai.use(chaiHttp);
 const should = chai.should();
 
-describe('Client Routes', () => {});
+describe('Client Routes', () => { });
 
 describe('API Routes', () => {
   beforeEach(done => {
