@@ -28,28 +28,6 @@ router.get('/users/:id', (request, response) => {
     .catch(error => response.status(500).json(error));
 });
 
-router.get('/complaints', (request, response) => {
-  database('complaints').select()
-    .then((complaints) => {
-      response.status(200).json(complaints);
-    })
-    .catch((error) => {
-      response.status(500).json({ error });
-    });
-});
-
-router.get('/complaints/:id', (request, response) => {
-  const { id } = request.params;
-  database('complaints').where('id', id)
-    .then((complaint) => {
-      if (!complaint[0]) {
-        return response.status(404).json({ error: `Could not find complaint with id ${id}.` })
-      }
-      return response.status(200).json(complaint[0]);
-    })
-    .catch(error => response.status(500).json(error));
-});
-
 router.post('/users', (request, response) => {
   const user = request.body;
   const requiredParameters = [
@@ -76,6 +54,64 @@ router.post('/users', (request, response) => {
     .insert(user, 'id')
     .then((user) => {
       return response.status(201).json({ id: user[0] })
+    })
+    .catch((error) => {
+      return response.status(500).json(error);
+    });
+});
+
+router.get('/complaints', (request, response) => {
+  database('complaints').select()
+    .then((complaints) => {
+      response.status(200).json(complaints);
+    })
+    .catch((error) => {
+      response.status(500).json({ error });
+    });
+});
+
+router.get('/complaints/:id', (request, response) => {
+  const { id } = request.params;
+  database('complaints').where('id', id)
+    .then((complaint) => {
+      if (!complaint[0]) {
+        return response.status(404).json({ error: `Could not find complaint with id ${id}.` })
+      }
+      return response.status(200).json(complaint[0]);
+    })
+    .catch(error => response.status(500).json(error));
+});
+
+router.post('/complaints', (request, response) => {
+  const complaint = request.body;
+  const requiredParameters = [
+    "user_id",
+    "isSoliciting",
+    "subject",
+    "description",
+    "callerIdNumber",
+    "callerIdName",
+    "date",
+    "time",
+    "type",
+    "altPhone",
+    "permissionGranted",
+    "businessName",
+    "agentName"
+  ]
+
+  for (let parameter of requiredParameters) {
+    if (complaint[parameter] === undefined) {
+      return response.status(422).json({
+        error: `Expected format: {user_id: <Integer>, isSoliciting: <String>, subject: <String>, description: <String>, callerIdNumber: <String>, callerIdName: <String>, date: <String>, time: <String>, type: <String>, altPhone: <String>, permissionGranted: <Boolean>, businessName: <String>, agentName: <String>}. Missing required property ${parameter}.`
+      });
+    }
+  }
+
+  database('complaints')
+    .insert(complaint, 'id')
+    .then((complaint) => {
+      return response.status(201).json({ id: complaint[0] })
     })
     .catch((error) => {
       return response.status(500).json(error);

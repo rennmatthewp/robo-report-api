@@ -99,9 +99,32 @@ describe('API Routes', () => {
         })
         .end((error, response) => {
           response.should.have.status(201);
+          response.should.be.json;
+          response.body.should.have.property('id');
           done();
         });
     });
+
+    it('should return an error with status 422 if a required param is missing', (done) => {
+      chai.request(server)
+        .post('/api/v1/users')
+        .send({
+          lastName: "Sweet",
+          email: "abcdef@hijklmnop",
+          phone: "049-765-9877",
+          phoneType: "wireless",
+          address: "123 Main",
+          city: "Denver",
+          state: "CO",
+          zipcode: "90210"
+        })
+        .end((error, response) => {
+          response.should.have.status(422);
+          response.should.be.json;
+          response.body.should.have.property('error', 'Expected format: {firstName: <String>, lastName: <String>, email: <String>, phone: <String>, phoneType: <String>, address: <String>, city: <String>, state: <String>, zipcode: <String>}. Missing required property firstName.');
+          done();
+        });
+    })
   });
 
   describe('GET /api/v1/complaints', () => {
@@ -169,4 +192,58 @@ describe('API Routes', () => {
         });
     });
   });
+
+  describe('POST api/v1/complaints', () => {
+    it('should add a new complaint to the database and return the new ID', (done) => {
+      chai.request(server)
+        .post('/api/v1/complaints')
+        .send({
+          "user_id": 1,
+          "isSoliciting": true,
+          "subject": "Robocall",
+          "description": "A woman wants to eliminate my credit card debt",
+          "callerIdNumber": "303-123-1234",
+          "callerIdName": "unknown",
+          "date": "04/04/2018",
+          "time": "5:00 PM",
+          "type": "Prerecorded Voice",
+          "altPhone": "303-123-1234",
+          "permissionGranted": false,
+          "businessName": null,
+          "agentName": null
+        })
+        .end((error, response) => {
+          response.should.have.status(201);
+          response.should.be.json;
+          response.body.should.have.property('id');
+          done();
+        });
+    });
+    
+    it('should return an error with status 422 if a required param is missing', (done) => {
+      chai.request(server)
+        .post('/api/v1/complaints')
+        .send({
+          "user_id": 1,
+          "isSoliciting": true,
+          "subject": "Robocall",
+          "description": "A woman wants to eliminate my credit card debt",
+          "callerIdName": "unknown",
+          "date": "04/04/2018",
+          "time": "5:00 PM",
+          "type": "Prerecorded Voice",
+          "altPhone": "303-123-1234",
+          "permissionGranted": false,
+          "businessName": null,
+          "agentName": null
+        })
+        .end((error, response) => {
+          response.should.have.status(422);
+          response.should.be.json;
+          response.body.should.have.property('error', "Expected format: {user_id: <Integer>, isSoliciting: <String>, subject: <String>, description: <String>, callerIdNumber: <String>, callerIdName: <String>, date: <String>, time: <String>, type: <String>, altPhone: <String>, permissionGranted: <Boolean>, businessName: <String>, agentName: <String>}. Missing required property callerIdNumber.");
+          done();
+        });
+    })
+  })
+
 });
