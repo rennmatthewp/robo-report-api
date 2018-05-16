@@ -82,6 +82,28 @@ describe('API Routes', () => {
     });
   });
 
+  describe('POST /api/v1/users', () => {
+    it('should add a new user to the database and return the new ID', (done) => {
+      chai.request(server)
+        .post('/api/v1/users')
+        .send({
+          firstName: "Jon",
+          lastName: "Sweet",
+          email: "abcdef@hijklmnop",
+          phone: "321-765-9877",
+          phoneType: "wireless",
+          address: "123 Main",
+          city: "Denver",
+          state: "CO",
+          zipcode: "90210"
+        })
+        .end((error, response) => {
+          response.should.have.status(201);
+          done();
+        });
+    });
+  });
+
   describe('GET /api/v1/complaints', () => {
     it('should return an array of complaints', (done) => {
       chai.request(server)

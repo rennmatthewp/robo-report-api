@@ -18,8 +18,8 @@ exports.seed = function(knex, Promise) {
             });
             return knex('complaints').insert(complaints);
           })
-          .catch(error => console.log(`error seeding: ${error}`))
+          .catch(error => console.log(`error seeding users: ${error}`))
       ]);
     })
-    .catch(error => console.log(`error seeding: ${error}`));
+    .catch(error => console.log(`error seeding complaints: ${error}`));
 };

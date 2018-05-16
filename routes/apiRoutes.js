@@ -21,7 +21,7 @@ router.get('/users/:id', (request, response) => {
   database('users').where('id', id)
     .then((user) => {
       if (!user[0]) {
-        return response.status(404).json({error: `Could not find user with id ${id}.`})
+        return response.status(404).json({ error: `Could not find user with id ${id}.` })
       }
       return response.status(200).json(user[0]);
     })
@@ -48,6 +48,38 @@ router.get('/complaints/:id', (request, response) => {
       return response.status(200).json(complaint[0]);
     })
     .catch(error => response.status(500).json(error));
+});
+
+router.post('/users', (request, response) => {
+  const user = request.body;
+  const requiredParameters = [
+    'firstName',
+    'lastName',
+    'email',
+    'phone',
+    'phoneType',
+    'address',
+    'city',
+    'state',
+    'zipcode'
+  ]
+
+  for (let parameter of requiredParameters) {
+    if (!user[parameter]) {
+      return response.status(422).json({
+        error: `Expected format: {firstName: <String>, lastName: <String>, email: <String>, phone: <String>, phoneType: <String>, address: <String>, city: <String>, state: <String>, zipcode: <String>}. Missing required property ${parameter}.`
+      });
+    }
+  }
+
+  database('users')
+    .insert(user, 'id')
+    .then((user) => {
+      return response.status(201).json({ id: user[0] })
+    })
+    .catch((error) => {
+      return response.status(500).json(error);
+    });
 });
 
 module.exports = { router, database };
