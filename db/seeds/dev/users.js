@@ -18,7 +18,6 @@ exports.seed = function(knex, Promise) {
             });
             return knex('complaints').insert(complaints);
           })
-          .then(() => console.log('seeding complete'))
           .catch(error => console.log(`error seeding: ${error}`))
       ]);
     })
