@@ -8,12 +8,12 @@ const router = express.Router();
 
 router.get('/users', (request, response) => {
   database('users').select()
-    .then(users => {
+    .then((users) => {
       response.status(200).json(users);
     })
-    .catch(error => {
-      response.status(500).json({error});
-    })
+    .catch((error) => {
+      response.status(500).json({ error });
+    });
 });
 
 module.exports = { router, database };
