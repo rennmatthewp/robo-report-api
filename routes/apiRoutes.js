@@ -126,7 +126,6 @@ router.get('/complaints/:id', (request, response) => {
 router.post('/complaints', (request, response) => {
   const complaint = request.body;
 
-
   for (let parameter of requiredComplaintParameters) {
     if (complaint[parameter] === undefined) {
       return response.status(422).json({
@@ -143,6 +142,30 @@ router.post('/complaints', (request, response) => {
     .catch((error) => {
       return response.status(500).json(error);
     });
+});
+
+router.patch('/complaints/:id', (request, response) => {
+  const { id } = request.params;
+  const revision = request.body;
+  let correctFormat = true;
+  Object.keys(revision).forEach(key => {
+    if (!requiredComplaintParameters.includes(key)) {
+      correctFormat = false;
+    }
+  })
+  if (!correctFormat) {
+    return response.status(422).json({ error: 'Cannot update complaint, invalid property provided. Valid properties include: {user_id: <Integer>, isSoliciting: <String>, subject: <String>, description: <String>, callerIdNumber: <String>, callerIdName: <String>, date: <String>, time: <String>, type: <String>, altPhone: <String>, permissionGranted: <Boolean>, businessName: <String>, agentName: <String>}' });
+  }
+
+  database('complaints').where('id', id)
+    .select()
+    .update(revision)
+    .then(complaint => {
+      return response.status(201).json({ message: `updated complaint with ID=${id}` });
+    })
+    .catch(error => {
+      return response.status(500).json({ error });
+    })
 });
 
 module.exports = { router, database };
