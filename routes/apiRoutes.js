@@ -6,6 +6,34 @@ const database = require('knex')(configuration);
 
 const router = express.Router();
 
+const requiredUserParameters = [
+  'firstName',
+  'lastName',
+  'email',
+  'phone',
+  'phoneType',
+  'address',
+  'city',
+  'state',
+  'zipcode'
+];
+
+const requiredComplaintParameters = [
+  "user_id",
+  "isSoliciting",
+  "subject",
+  "description",
+  "callerIdNumber",
+  "callerIdName",
+  "date",
+  "time",
+  "type",
+  "altPhone",
+  "permissionGranted",
+  "businessName",
+  "agentName"
+]
+
 router.get('/users', (request, response) => {
   database('users').select()
     .then((users) => {
@@ -30,19 +58,8 @@ router.get('/users/:id', (request, response) => {
 
 router.post('/users', (request, response) => {
   const user = request.body;
-  const requiredParameters = [
-    'firstName',
-    'lastName',
-    'email',
-    'phone',
-    'phoneType',
-    'address',
-    'city',
-    'state',
-    'zipcode'
-  ]
 
-  for (let parameter of requiredParameters) {
+  for (let parameter of requiredUserParameters) {
     if (!user[parameter]) {
       return response.status(422).json({
         error: `Expected format: {firstName: <String>, lastName: <String>, email: <String>, phone: <String>, phoneType: <String>, address: <String>, city: <String>, state: <String>, zipcode: <String>}. Missing required property ${parameter}.`
@@ -58,6 +75,30 @@ router.post('/users', (request, response) => {
     .catch((error) => {
       return response.status(500).json(error);
     });
+});
+
+router.patch('/users/:id', (request, response) => {
+  const { id } = request.params;
+  const revision = request.body;
+  let correctFormat = true;
+  Object.keys(revision).forEach(key => {
+    if (!requiredUserParameters.includes(key)) {
+      correctFormat = false;
+    }
+  })
+  if (!correctFormat) {
+    return response.status(422).json({ error: 'Cannot update user, invalid property provided. Valid properties include: {firstName: <String>, lastName: <String>, email: <String>, phone: <String>, phoneType: <String>, address: <String>, city: <String>, state: <String>, zipcode: <String>}' });
+  }
+
+  database('users').where('id', id)
+    .select()
+    .update(revision)
+    .then(user => {
+      return response.status(201).json({ message: `updated user with ID=${id}` });
+    })
+    .catch(error => {
+      return response.status(500).json({ error });
+    })
 });
 
 router.get('/complaints', (request, response) => {
@@ -84,23 +125,9 @@ router.get('/complaints/:id', (request, response) => {
 
 router.post('/complaints', (request, response) => {
   const complaint = request.body;
-  const requiredParameters = [
-    "user_id",
-    "isSoliciting",
-    "subject",
-    "description",
-    "callerIdNumber",
-    "callerIdName",
-    "date",
-    "time",
-    "type",
-    "altPhone",
-    "permissionGranted",
-    "businessName",
-    "agentName"
-  ]
 
-  for (let parameter of requiredParameters) {
+
+  for (let parameter of requiredComplaintParameters) {
     if (complaint[parameter] === undefined) {
       return response.status(422).json({
         error: `Expected format: {user_id: <Integer>, isSoliciting: <String>, subject: <String>, description: <String>, callerIdNumber: <String>, callerIdName: <String>, date: <String>, time: <String>, type: <String>, altPhone: <String>, permissionGranted: <Boolean>, businessName: <String>, agentName: <String>}. Missing required property ${parameter}.`
