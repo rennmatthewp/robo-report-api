@@ -71,14 +71,14 @@ router.post('/authenticate', (request, response) => {
   return null;
 });
 
-router.get('/users', (request, response) => {
+router.get('/users', checkAuth, (request, response) => {
   database('users')
     .select()
     .then(users => response.status(200).json(users))
     .catch(error => response.status(500).json({ error }));
 });
 
-router.get('/users/:id', (request, response) => {
+router.get('/users/:id', checkAuth, (request, response) => {
   const { id } = request.params;
   database('users')
     .where('id', id)
@@ -168,14 +168,14 @@ router.delete('/users/:id', checkAuth, (request, response) => {
     .catch(error => response.status(500).json(error));
 });
 
-router.get('/complaints', (request, response) => {
+router.get('/complaints', checkAuth, (request, response) => {
   database('complaints')
     .select()
     .then(complaints => response.status(200).json(complaints))
     .catch(error => response.status(500).json({ error }));
 });
 
-router.get('/complaints/:id', (request, response) => {
+router.get('/complaints/:id', checkAuth, (request, response) => {
   const { id } = request.params;
   database('complaints')
     .where('id', id)

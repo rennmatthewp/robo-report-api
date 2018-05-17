@@ -90,6 +90,7 @@ describe('API Routes', () => {
       chai
         .request(server)
         .get('/api/v1/users')
+        .set('token', token)
         .end((error, response) => {
           response.should.have.status(200);
           response.should.be.json;
@@ -115,6 +116,7 @@ describe('API Routes', () => {
       chai
         .request(server)
         .get('/api/v1/users/1')
+        .set('token', token)
         .end((error, response) => {
           response.should.have.status(200);
           response.should.be.json;
@@ -137,6 +139,7 @@ describe('API Routes', () => {
       chai
         .request(server)
         .get('/api/v1/users/500')
+        .set('token', token)
         .end((error, response) => {
           response.should.have.status(404);
           response.should.be.json;
@@ -299,6 +302,7 @@ describe('API Routes', () => {
       chai
         .request(server)
         .get('/api/v1/complaints')
+        .set('token', token)
         .end((error, response) => {
           response.should.have.status(200);
           response.should.be.json;
@@ -331,6 +335,7 @@ describe('API Routes', () => {
       chai
         .request(server)
         .get('/api/v1/complaints/1')
+        .set('token', token)
         .end((error, response) => {
           response.should.have.status(200);
           response.should.be.json;
@@ -360,6 +365,7 @@ describe('API Routes', () => {
       chai
         .request(server)
         .get('/api/v1/complaints/500')
+        .set('token', token)
         .end((error, response) => {
           response.should.have.status(404);
           response.should.be.json;
