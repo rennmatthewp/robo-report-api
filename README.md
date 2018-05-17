@@ -7,26 +7,49 @@ A back-end utility for storing FCC unwanted call complaint data in a postgres da
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
 
 1. Clone this repository
+
 ```
 git clone https://github.com/rennmatthewp/roboReport.git
 ```
-2. Change in to the project directory and install the dependencies - 
+
+2. Change in to the project directory and install the dependencies
+
 ```
 cd roboReport && npm install
 ```
-3. Migrate the database schema (see prerequisites for database creation)
+
+3. Create a .env file in the route directory
+
+```
+touch .env
+```
+
+4. Add two environment variables to the `.env` 
+
+```
+secret_key=<String> // secret to be used for generating JWTs (MUST BE KEPT SECURE)
+auth_email=<String> // such as @gmail.com
+```
+
+5. Migrate the database schema (see prerequisites for database creation)
+
 ```
 knex migrate:latest
 ``` 
-4. Seed the database (optional) 
+
+6. Seed the database (optional) 
+
 ```
 knex seed:run
 ```
-5. Start the server in your terminal - 
+
+7. Start the server in your terminal
+
 ```
 node server.js
 ```
-4. Visit localhost:3000 in your browser and complete the form to obtain a JWT.
+
+8. Visit localhost:3000 in your browser and complete the form to obtain a JWT.
 
 Once the token is received, you may send requests to any of this api's endpoints by including the token in the header of your request. Please see the following prerequisites for establishing the necessary databases **prior** to sending requests to the API or running the test suite.
 
@@ -37,7 +60,9 @@ Once the token is received, you may send requests to any of this api's endpoints
 ```
 brew install postgresql
 ```
+
 * Create two databases, *robo_report* & *robo_report_test* using the postgreSQL command line interface
+
 ```
 psql
 
@@ -61,6 +86,7 @@ GET api/v1/authenticate
 GET api/v1/users
 
 * returns an array of objects containing user information
+
 ```
 [{
     "email": "thedude@gmail.com",
@@ -80,7 +106,9 @@ GET api/v1/users
 ```
 
 GET api/v1/users/:id
+
 * Returns a single user (object) by their ID
+
 ```
 {
     "email": "thedude@gmail.com",
@@ -98,6 +126,7 @@ GET api/v1/users/:id
 GET api/v1/complaints
 
 * returns an array of objects containing complaint information
+
 ```
 [{
     "isSoliciting": true,
@@ -120,7 +149,9 @@ GET api/v1/complaints
 ```
 
 GET api/v1/complaints/:id
+
 * Returns a single complaint (object) by their ID
+
 ```
 {
     "isSoliciting": true,
@@ -139,7 +170,9 @@ GET api/v1/complaints/:id
 ```
 
 POST api/v1/users
+
 * Creates a new user in the database and returns the newly generated ID
+
 ```
 {
   id: <Integer>
@@ -147,7 +180,9 @@ POST api/v1/users
 ```
 
 POST api/v1/complaints
+
 * Creates a new complaint in the database and returns the newly generated ID
+
 ```
 {
   id: <Integer>
@@ -155,8 +190,10 @@ POST api/v1/complaints
 ```
 
 PATCH api/v1/users/:id
+
 * Corrects a table column for a user based on ID.
 * Responds with number of and name of updated columns
+
 ```
 {
   message: "<Integer> columns updated: [ <columns> ]. User id: <Integer>"
@@ -164,8 +201,10 @@ PATCH api/v1/users/:id
 ```
 
 PATCH api/v1/complaints/:id
+
 * Corrects a table column for a complaint based on ID.
 * Responds with number of and name of updated columns
+
 ```
 {
   message: "<Integer> columns updated: [ <columns> ]. Complaint id: <Integer>"
@@ -173,7 +212,9 @@ PATCH api/v1/complaints/:id
 ```
 
 DELETE api/v1/users/:id
+
 * Removes a user from the database and responds with a confirmation message
+
 ```
 {
   message: "<Integer> row(s) deleted. Deleted user with id: <Integer>."
@@ -181,7 +222,9 @@ DELETE api/v1/users/:id
 ```
 
 DELETE api/v1/complaints/:id
+
 * Removes a complaint from the database and responds with a confirmation message
+
 ```
 {
   message: "<Integer> row(s) deleted. Deleted complaint with id: <Integer>."
@@ -191,6 +234,7 @@ DELETE api/v1/complaints/:id
 ## Running the tests
 
 The test suite requires the test database *robo_report_test* to be established. Tests can be run with the command:
+
 ```
 npm test
 ``` 
