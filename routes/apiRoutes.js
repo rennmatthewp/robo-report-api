@@ -95,8 +95,16 @@ router.patch('/users/:id', (request, response) => {
     .where('id', id)
     .select()
     .update(revision)
-    .then(() => {
-      response.status(201).json({ message: `updated user with id: ${id}` });
+    .then((updateCount) => {
+      if (updateCount === 0) {
+        return response.status(422).json({
+          error: `${updateCount} column(s) updated. Unable to find user with id: ${id}`,
+        });
+      }
+      const updates = Object.keys(revision).join(', ');
+      return response.status(201).json({
+        message: `${updateCount} column(s) updated: [ ${updates} ]. User id: ${id}.`,
+      });
     })
     .catch(error => response.status(500).json({ error }));
 });
@@ -110,8 +118,17 @@ router.delete('/users/:id', (request, response) => {
       database('users')
         .where('id', id)
         .del()
-        .then(user => response.status(200).json(user))
-        .catch(error => response.status(500).json(error));
+        .then((deleteCount) => {
+          if (deleteCount === 0) {
+            return response.status(422).json({
+              error: `${deleteCount} row(s) deleted. No user found with id: ${id}`,
+            });
+          }
+          return response.status(200).json({
+            message: `${deleteCount} row(s) deleted. Deleted user with id: ${id}.`,
+          });
+        })
+        .catch(error => response.status(500).json({ error }));
     })
     .catch(error => response.status(500).json(error));
 });
@@ -178,12 +195,12 @@ router.patch('/complaints/:id', (request, response) => {
     .then((updateCount) => {
       if (updateCount === 0) {
         return response.status(422).json({
-          error: `${updateCount} column(s) updated. Unable to find complaint with id=${id}`,
+          error: `${updateCount} column(s) updated. Unable to find complaint with id: ${id}`,
         });
       }
       const updates = Object.keys(revision).join(', ');
       return response.status(201).json({
-        message: `${updateCount} column(s) updated: [ ${updates} ]. Complaint id=${id}.`,
+        message: `${updateCount} column(s) updated: [ ${updates} ]. Complaint id: ${id}.`,
       });
     })
     .catch(error => response.status(500).json({ error }));
@@ -197,11 +214,11 @@ router.delete('/complaints/:id', (request, response) => {
     .then((deleteCount) => {
       if (deleteCount === 0) {
         return response.status(422).json({
-          error: `${deleteCount} row(s) deleted. No complaint found with id=${id}`,
+          error: `${deleteCount} row(s) deleted. No complaint found with id: ${id}`,
         });
       }
       return response.status(200).json({
-        message: `${deleteCount} row(s) deleted. Deleted complaint with id=${id}.`,
+        message: `${deleteCount} row(s) deleted. Deleted complaint with id: ${id}.`,
       });
     })
     .catch(error => response.status(500).json({ error }));
