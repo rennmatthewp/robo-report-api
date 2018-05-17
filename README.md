@@ -28,7 +28,7 @@ touch .env
 
 ```
 secret_key=<String> // secret to be used for generating JWTs (MUST BE KEPT SECURE)
-auth_email=<String> // such as @gmail.com
+auth_email=<String> // such as 'gmail.com'
 ```
 
 5. Migrate the database schema (see prerequisites for database creation)
