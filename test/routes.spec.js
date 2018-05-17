@@ -142,13 +142,16 @@ describe('API Routes', () => {
         .request(server)
         .patch('/api/v1/users/1')
         .send({
-          address: '42 Wallaby Way Sydney',
+          address: 'bowling alley',
         })
         .end((error, response) => {
           response.should.have.status(201);
           response.should.be.json;
           response.body.should.be.an('object');
-          response.body.should.have.property('message', 'updated user with id: 1');
+          response.body.should.have.property(
+            'message',
+            '1 column(s) updated: [ address ]. User id: 1.',
+          );
           done();
         });
     });
@@ -169,21 +172,60 @@ describe('API Routes', () => {
           done();
         });
     });
-  });
 
-  describe('DELETE /api/v1/users/:id', () => {
-    it('should delete a user by its ID', (done) => {
+    it('should return an error with status 422 if patching a non-existent user', (done) => {
       chai
         .request(server)
-        .delete('/api/v1/users/2')
+        .patch('/api/v1/users/500')
+        .send({
+          address: 'walters',
+        })
         .end((error, response) => {
-          response.should.have.status(200);
+          response.should.have.status(422);
           response.should.be.json;
-          response.body.should.equal(1);
+          response.should.be.an('object');
+          response.body.should.have.property(
+            'error',
+            '0 column(s) updated. Unable to find user with id: 500',
+          );
           done();
         });
     });
   });
+
+  describe('DELETE /api/v1/users/:id', () => {
+    it('should delete a user by its id', (done) => {
+      chai
+        .request(server)
+        .delete('/api/v1/users/32')
+        .end((error, response) => {
+          response.should.have.status(200);
+          response.should.be.json;
+          response.body.should.have.property(
+            'message',
+            '1 row(s) deleted. Deleted user with id: 32.',
+          );
+          done();
+        });
+    });
+
+    it('should return an error with status 422 if no user is found', (done) => {
+      chai
+        .request(server)
+        .delete('/api/v1/users/44')
+        .end((error, response) => {
+          response.should.have.status(422);
+          response.should.be.json;
+          response.body.should.be.an('object');
+          response.body.should.have.property(
+            'error',
+            '0 row(s) deleted. No user found with id: 44',
+          );
+          done();
+        });
+    });
+  });
+
 
   describe('GET /api/v1/complaints', () => {
     it('should return an array of complaints', (done) => {
@@ -332,7 +374,7 @@ describe('API Routes', () => {
           response.body.should.be.an('object');
           response.body.should.have.property(
             'message',
-            '1 column(s) updated: [ isSoliciting ]. Complaint id=1.',
+            '1 column(s) updated: [ isSoliciting ]. Complaint id: 1.',
           );
           done();
         });
@@ -368,7 +410,7 @@ describe('API Routes', () => {
           response.should.be.an('object');
           response.body.should.have.property(
             'error',
-            '0 column(s) updated. Unable to find complaint with id=500',
+            '0 column(s) updated. Unable to find complaint with id: 500',
           );
           done();
         });
@@ -385,7 +427,7 @@ describe('API Routes', () => {
           response.should.be.json;
           response.body.should.have.property(
             'message',
-            '1 row(s) deleted. Deleted complaint with id=32.',
+            '1 row(s) deleted. Deleted complaint with id: 32.',
           );
           done();
         });
@@ -401,7 +443,7 @@ describe('API Routes', () => {
           response.body.should.be.an('object');
           response.body.should.have.property(
             'error',
-            '0 row(s) deleted. No complaint found with id=33',
+            '0 row(s) deleted. No complaint found with id: 33',
           );
           done();
         });
