@@ -150,7 +150,13 @@ router.patch('/complaints/:id', (request, response) => {
   return database('complaints').where('id', id)
     .select()
     .update(revision)
-    .then(() => response.status(201).json({ message: `updated complaint with id=${id}` }))
+    .then((updateCount) => {
+      if (updateCount === 0) {
+        return response.status(422).json({ error: `${updateCount} column(s) updated. Unable to find complaint with id=${id}` });
+      }
+      const updates = Object.keys(revision).join(', ');
+      return response.status(201).json({ message: `${updateCount} column(s) updated: [ ${updates} ]. Complaint id=${id}.` });
+    })
     .catch(error => response.status(500).json({ error }));
 });
 

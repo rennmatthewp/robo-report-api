@@ -257,7 +257,7 @@ describe('API Routes', () => {
           response.should.have.status(201);
           response.should.be.json;
           response.body.should.be.an('object');
-          response.body.should.have.property('message', 'updated complaint with id=1');
+          response.body.should.have.property('message', '1 column(s) updated: [ isSoliciting ]. Complaint id=1.');
           done();
         });
     });
@@ -266,11 +266,26 @@ describe('API Routes', () => {
       chai.request(server)
         .patch('/api/v1/complaints/1')
         .send({
-          randomProperty: true,
+          nonExistentColumn: true,
         })
         .end((error, response) => {
           response.should.have.status(422);
           response.body.should.have.property('error', 'Cannot update complaint, invalid property provided. Valid properties include: {user_id: <Integer>, isSoliciting: <String>, subject: <String>, description: <String>, callerIdNumber: <String>, callerIdName: <String>, date: <String>, time: <String>, type: <String>, altPhone: <String>, permissionGranted: <Boolean>, businessName: <String>, agentName: <String>}');
+          done();
+        });
+    });
+
+    it('should return an error with status 422 if patching a non-existent complaint', (done) => {
+      chai.request(server)
+        .patch('/api/v1/complaints/500')
+        .send({
+          permissionGranted: false,
+        })
+        .end((error, response) => {
+          response.should.have.status(422);
+          response.should.be.json;
+          response.should.be.an('object');
+          response.body.should.have.property('error', '0 column(s) updated. Unable to find complaint with id=500');
           done();
         });
     });
