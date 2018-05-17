@@ -9,16 +9,17 @@ const server = require('../server');
 const should = chai.should();
 chai.use(chaiHttp);
 
-describe('Client Routes', () => { });
+describe('Client Routes', () => {});
 
 describe('API Routes', () => {
   beforeEach((done) => {
     database.migrate.rollback().then(() => {
       database.migrate.rollback().then(() => {
         database.migrate.rollback().then(() => {
-          database.migrate.latest().then(() => database.seed.run().then(() => {
-            done();
-          }));
+          database.migrate.latest().then(() =>
+            database.seed.run().then(() => {
+              done();
+            }));
         });
       });
     });
@@ -26,7 +27,8 @@ describe('API Routes', () => {
 
   describe('GET /api/v1/users', () => {
     it('should return an array of users', (done) => {
-      chai.request(server)
+      chai
+        .request(server)
         .get('/api/v1/users')
         .end((error, response) => {
           response.should.have.status(200);
@@ -50,7 +52,8 @@ describe('API Routes', () => {
 
   describe('GET /api/v1/users/:id', () => {
     it('should return a single user by their id', (done) => {
-      chai.request(server)
+      chai
+        .request(server)
         .get('/api/v1/users/1')
         .end((error, response) => {
           response.should.have.status(200);
@@ -71,12 +74,13 @@ describe('API Routes', () => {
     });
 
     it('should return an error with status 404 if the user is not found', (done) => {
-      chai.request(server)
+      chai
+        .request(server)
         .get('/api/v1/users/500')
         .end((error, response) => {
           response.should.have.status(404);
           response.should.be.json;
-          response.body.should.have.property('error', 'Could not find user with id=500.');
+          response.body.should.have.property('error', 'Could not find user with id: 500.');
           done();
         });
     });
@@ -84,7 +88,8 @@ describe('API Routes', () => {
 
   describe('POST /api/v1/users', () => {
     it('should add a new user to the database and return the new id', (done) => {
-      chai.request(server)
+      chai
+        .request(server)
         .post('/api/v1/users')
         .send({
           firstName: 'Jon',
@@ -106,7 +111,8 @@ describe('API Routes', () => {
     });
 
     it('should return an error with status 422 if a required param is missing', (done) => {
-      chai.request(server)
+      chai
+        .request(server)
         .post('/api/v1/users')
         .send({
           lastName: 'Sweet',
@@ -121,7 +127,59 @@ describe('API Routes', () => {
         .end((error, response) => {
           response.should.have.status(422);
           response.should.be.json;
-          response.body.should.have.property('error', 'Expected format: {firstName: <String>, lastName: <String>, email: <String>, phone: <String>, phoneType: <String>, address: <String>, city: <String>, state: <String>, zipcode: <String>}. Missing required property firstName.');
+          response.body.should.have.property(
+            'error',
+            'Expected format: {firstName: <String>, lastName: <String>, email: <String>, phone: <String>, phoneType: <String>, address: <String>, city: <String>, state: <String>, zipcode: <String>}. Missing required property firstName.',
+          );
+          done();
+        });
+    });
+  });
+
+  describe('PATCH api/v1/users', () => {
+    it('should update a user selected by id', (done) => {
+      chai
+        .request(server)
+        .patch('/api/v1/users/1')
+        .send({
+          address: '42 Wallaby Way Sydney',
+        })
+        .end((error, response) => {
+          response.should.have.status(201);
+          response.should.be.json;
+          response.body.should.be.an('object');
+          response.body.should.have.property('message', 'updated user with id: 1');
+          done();
+        });
+    });
+
+    it("should return an error with status 422 if patching a column that doesn't exist", (done) => {
+      chai
+        .request(server)
+        .patch('/api/v1/users/1')
+        .send({
+          bowling: true,
+        })
+        .end((error, response) => {
+          response.should.have.status(422);
+          response.body.should.have.property(
+            'error',
+            'Cannot update user, invalid property provided. Valid properties include: {firstName: <String>, lastName: <String>, email: <String>, phone: <String>, phoneType: <String>, address: <String>, city: <String>, state: <String>, zipcode: <String>}',
+          );
+          done();
+        });
+    });
+  });
+
+  describe('DELETE /api/v1/users/:id', () => {
+    it('should delete a user by its ID', (done) => {
+      chai
+        .request(server)
+        .delete('/api/v1/users/2')
+        .end((error, response) => {
+          response.should.have.status(200);
+          response.should.be.json;
+          response.body.should.equal(1);
           done();
         });
     });
@@ -129,7 +187,8 @@ describe('API Routes', () => {
 
   describe('GET /api/v1/complaints', () => {
     it('should return an array of complaints', (done) => {
-      chai.request(server)
+      chai
+        .request(server)
         .get('/api/v1/complaints')
         .end((error, response) => {
           response.should.have.status(200);
@@ -139,7 +198,10 @@ describe('API Routes', () => {
           response.body[0].should.have.property('id', 1);
           response.body[0].should.have.property('user_id', 1);
           response.body[0].should.have.property('isSoliciting', true);
-          response.body[0].should.have.property('description', 'A woman wants to eliminate my credit card debt');
+          response.body[0].should.have.property(
+            'description',
+            'A woman wants to eliminate my credit card debt',
+          );
           response.body[0].should.have.property('subject', 'Robocall');
           response.body[0].should.have.property('callerIdNumber', '303-123-1234');
           response.body[0].should.have.property('callerIdName', 'unknown');
@@ -157,7 +219,8 @@ describe('API Routes', () => {
 
   describe('GET /api/v1/complaints/:id', () => {
     it('should return a complaint by its id', (done) => {
-      chai.request(server)
+      chai
+        .request(server)
         .get('/api/v1/complaints/1')
         .end((error, response) => {
           response.should.have.status(200);
@@ -166,7 +229,10 @@ describe('API Routes', () => {
           response.body.should.have.property('id', 1);
           response.body.should.have.property('user_id', 1);
           response.body.should.have.property('isSoliciting', true);
-          response.body.should.have.property('description', 'A woman wants to eliminate my credit card debt');
+          response.body.should.have.property(
+            'description',
+            'A woman wants to eliminate my credit card debt',
+          );
           response.body.should.have.property('subject', 'Robocall');
           response.body.should.have.property('callerIdNumber', '303-123-1234');
           response.body.should.have.property('callerIdName', 'unknown');
@@ -182,12 +248,13 @@ describe('API Routes', () => {
     });
 
     it('should return an error with status 404 if the complaint is not found', (done) => {
-      chai.request(server)
+      chai
+        .request(server)
         .get('/api/v1/complaints/500')
         .end((error, response) => {
           response.should.have.status(404);
           response.should.be.json;
-          response.body.should.have.property('error', 'Could not find complaint with id=500.');
+          response.body.should.have.property('error', 'Could not find complaint with id: 500.');
           done();
         });
     });
@@ -195,7 +262,8 @@ describe('API Routes', () => {
 
   describe('POST api/v1/complaints', () => {
     it('should add a new complaint to the database and return the new id', (done) => {
-      chai.request(server)
+      chai
+        .request(server)
         .post('/api/v1/complaints')
         .send({
           user_id: 1,
@@ -221,7 +289,8 @@ describe('API Routes', () => {
     });
 
     it('should return an error with status 422 if a required param is missing', (done) => {
-      chai.request(server)
+      chai
+        .request(server)
         .post('/api/v1/complaints')
         .send({
           user_id: 1,
@@ -240,7 +309,10 @@ describe('API Routes', () => {
         .end((error, response) => {
           response.should.have.status(422);
           response.should.be.json;
-          response.body.should.have.property('error', 'Expected format: {user_id: <Integer>, isSoliciting: <String>, subject: <String>, description: <String>, callerIdNumber: <String>, callerIdName: <String>, date: <String>, time: <String>, type: <String>, altPhone: <String>, permissionGranted: <Boolean>, businessName: <String>, agentName: <String>}. Missing required property callerIdNumber.');
+          response.body.should.have.property(
+            'error',
+            'Expected format: {user_id: <Integer>, isSoliciting: <String>, subject: <String>, description: <String>, callerIdNumber: <String>, callerIdName: <String>, date: <String>, time: <String>, type: <String>, altPhone: <String>, permissionGranted: <Boolean>, businessName: <String>, agentName: <String>}. Missing required property callerIdNumber.',
+          );
           done();
         });
     });
@@ -248,7 +320,8 @@ describe('API Routes', () => {
 
   describe('PATCH api/v1/complaints', () => {
     it('should update a complaint selected by id', (done) => {
-      chai.request(server)
+      chai
+        .request(server)
         .patch('/api/v1/complaints/1')
         .send({
           isSoliciting: true,
@@ -257,26 +330,34 @@ describe('API Routes', () => {
           response.should.have.status(201);
           response.should.be.json;
           response.body.should.be.an('object');
-          response.body.should.have.property('message', '1 column(s) updated: [ isSoliciting ]. Complaint id=1.');
+          response.body.should.have.property(
+            'message',
+            '1 column(s) updated: [ isSoliciting ]. Complaint id=1.',
+          );
           done();
         });
     });
 
-    it('should return an error with status 422 if patching a column that doesn\'t exist', (done) => {
-      chai.request(server)
+    it("should return an error with status 422 if patching a column that doesn't exist", (done) => {
+      chai
+        .request(server)
         .patch('/api/v1/complaints/1')
         .send({
           nonExistentColumn: true,
         })
         .end((error, response) => {
           response.should.have.status(422);
-          response.body.should.have.property('error', 'Cannot update complaint, invalid property provided. Valid properties include: {user_id: <Integer>, isSoliciting: <String>, subject: <String>, description: <String>, callerIdNumber: <String>, callerIdName: <String>, date: <String>, time: <String>, type: <String>, altPhone: <String>, permissionGranted: <Boolean>, businessName: <String>, agentName: <String>}');
+          response.body.should.have.property(
+            'error',
+            'Cannot update complaint, invalid property provided. Valid properties include: {user_id: <Integer>, isSoliciting: <String>, subject: <String>, description: <String>, callerIdNumber: <String>, callerIdName: <String>, date: <String>, time: <String>, type: <String>, altPhone: <String>, permissionGranted: <Boolean>, businessName: <String>, agentName: <String>}',
+          );
           done();
         });
     });
 
     it('should return an error with status 422 if patching a non-existent complaint', (done) => {
-      chai.request(server)
+      chai
+        .request(server)
         .patch('/api/v1/complaints/500')
         .send({
           permissionGranted: false,
@@ -285,7 +366,10 @@ describe('API Routes', () => {
           response.should.have.status(422);
           response.should.be.json;
           response.should.be.an('object');
-          response.body.should.have.property('error', '0 column(s) updated. Unable to find complaint with id=500');
+          response.body.should.have.property(
+            'error',
+            '0 column(s) updated. Unable to find complaint with id=500',
+          );
           done();
         });
     });
@@ -293,24 +377,32 @@ describe('API Routes', () => {
 
   describe('DELETE /api/v1/complaints/:id', () => {
     it('should delete a complaint by its id', (done) => {
-      chai.request(server)
+      chai
+        .request(server)
         .delete('/api/v1/complaints/32')
         .end((error, response) => {
           response.should.have.status(200);
           response.should.be.json;
-          response.body.should.have.property('message', '1 row(s) deleted. Deleted complaint with id=32.');
+          response.body.should.have.property(
+            'message',
+            '1 row(s) deleted. Deleted complaint with id=32.',
+          );
           done();
         });
     });
 
     it('should return an error with status 422 if no complaint is found', (done) => {
-      chai.request(server)
+      chai
+        .request(server)
         .delete('/api/v1/complaints/33')
         .end((error, response) => {
           response.should.have.status(422);
           response.should.be.json;
           response.body.should.be.an('object');
-          response.body.should.have.property('error', '0 row(s) deleted. No complaint found with id=33');
+          response.body.should.have.property(
+            'error',
+            '0 row(s) deleted. No complaint found with id=33',
+          );
           done();
         });
     });
