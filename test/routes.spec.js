@@ -2,6 +2,7 @@
 
 const chai = require('chai');
 const chaiHttp = require('chai-http');
+const jwt = require('jsonwebtoken');
 const { database } = require('../routes/apiRoutes');
 const server = require('../server');
 
@@ -12,16 +13,75 @@ chai.use(chaiHttp);
 describe('Client Routes', () => {});
 
 describe('API Routes', () => {
+  let token;
   beforeEach((done) => {
     database.migrate.rollback().then(() => {
       database.migrate.rollback().then(() => {
         database.migrate.rollback().then(() => {
           database.migrate.latest().then(() =>
             database.seed.run().then(() => {
+              token = jwt.sign({
+                email: 'robbie@turing.io',
+                appName: 'roboReport',
+                admin: true,
+              }, process.env.secret_key);
               done();
             }));
         });
       });
+    });
+  });
+
+  describe('POST api/v1/authenticate', () => {
+    it('should return a jwt', (done) => {
+      chai.request(server)
+        .post('/api/v1/authenticate')
+        .send({
+          email: 'robbie@turing.io',
+          appName: 'gonLearnYou',
+        })
+        .end((error, response) => {
+          response.should.have.status(201);
+          response.should.be.json;
+          response.should.be.an('object');
+          response.body.should.have.property('token');
+          done();
+        });
+    });
+
+    it('should return error with status 402 if missing appName or email', (done) => {
+      chai.request(server)
+        .post('/api/v1/authenticate')
+        .send({
+          email: 'robbie@turing.io',
+        })
+        .end((error, response) => {
+          response.should.have.status(402);
+          response.should.be.json;
+          response.should.be.an('object');
+          response.body.should.have.property('error', 'Invalid request.');
+          done();
+        });
+    });
+
+    it('should return token with admin set to false', (done) => {
+      chai.request(server)
+        .post('/api/v1/authenticate')
+        .send({
+          email: 'robbie@nope.org',
+          appName: 'Not',
+        })
+        .end((error, response) => {
+          response.should.have.status(201);
+          response.should.be.json;
+          response.should.be.an('object');
+          response.body.should.have.property('token');
+          // eslint-disable-next-line
+          jwt.verify(response.body.token, process.env.secret_key, (error, decoded) => {
+            decoded.admin.should.equal(false);
+          });
+          done();
+        });
     });
   });
 
@@ -30,6 +90,7 @@ describe('API Routes', () => {
       chai
         .request(server)
         .get('/api/v1/users')
+        .set('token', token)
         .end((error, response) => {
           response.should.have.status(200);
           response.should.be.json;
@@ -55,6 +116,7 @@ describe('API Routes', () => {
       chai
         .request(server)
         .get('/api/v1/users/1')
+        .set('token', token)
         .end((error, response) => {
           response.should.have.status(200);
           response.should.be.json;
@@ -77,6 +139,7 @@ describe('API Routes', () => {
       chai
         .request(server)
         .get('/api/v1/users/500')
+        .set('token', token)
         .end((error, response) => {
           response.should.have.status(404);
           response.should.be.json;
@@ -91,6 +154,7 @@ describe('API Routes', () => {
       chai
         .request(server)
         .post('/api/v1/users')
+        .set('token', token)
         .send({
           firstName: 'Jon',
           lastName: 'Sweet',
@@ -114,6 +178,7 @@ describe('API Routes', () => {
       chai
         .request(server)
         .post('/api/v1/users')
+        .set('token', token)
         .send({
           lastName: 'Sweet',
           email: 'abcdef@hijklmnop',
@@ -141,6 +206,7 @@ describe('API Routes', () => {
       chai
         .request(server)
         .patch('/api/v1/users/1')
+        .set('token', token)
         .send({
           address: 'bowling alley',
         })
@@ -160,6 +226,7 @@ describe('API Routes', () => {
       chai
         .request(server)
         .patch('/api/v1/users/1')
+        .set('token', token)
         .send({
           bowling: true,
         })
@@ -177,6 +244,7 @@ describe('API Routes', () => {
       chai
         .request(server)
         .patch('/api/v1/users/500')
+        .set('token', token)
         .send({
           address: 'walters',
         })
@@ -198,6 +266,7 @@ describe('API Routes', () => {
       chai
         .request(server)
         .delete('/api/v1/users/32')
+        .set('token', token)
         .end((error, response) => {
           response.should.have.status(200);
           response.should.be.json;
@@ -213,6 +282,7 @@ describe('API Routes', () => {
       chai
         .request(server)
         .delete('/api/v1/users/44')
+        .set('token', token)
         .end((error, response) => {
           response.should.have.status(422);
           response.should.be.json;
@@ -232,6 +302,7 @@ describe('API Routes', () => {
       chai
         .request(server)
         .get('/api/v1/complaints')
+        .set('token', token)
         .end((error, response) => {
           response.should.have.status(200);
           response.should.be.json;
@@ -264,6 +335,7 @@ describe('API Routes', () => {
       chai
         .request(server)
         .get('/api/v1/complaints/1')
+        .set('token', token)
         .end((error, response) => {
           response.should.have.status(200);
           response.should.be.json;
@@ -293,6 +365,7 @@ describe('API Routes', () => {
       chai
         .request(server)
         .get('/api/v1/complaints/500')
+        .set('token', token)
         .end((error, response) => {
           response.should.have.status(404);
           response.should.be.json;
@@ -307,6 +380,7 @@ describe('API Routes', () => {
       chai
         .request(server)
         .post('/api/v1/complaints')
+        .set('token', token)
         .send({
           user_id: 1,
           isSoliciting: true,
@@ -334,6 +408,7 @@ describe('API Routes', () => {
       chai
         .request(server)
         .post('/api/v1/complaints')
+        .set('token', token)
         .send({
           user_id: 1,
           isSoliciting: true,
@@ -365,6 +440,7 @@ describe('API Routes', () => {
       chai
         .request(server)
         .patch('/api/v1/complaints/1')
+        .set('token', token)
         .send({
           isSoliciting: true,
         })
@@ -384,6 +460,7 @@ describe('API Routes', () => {
       chai
         .request(server)
         .patch('/api/v1/complaints/1')
+        .set('token', token)
         .send({
           nonExistentColumn: true,
         })
@@ -401,6 +478,7 @@ describe('API Routes', () => {
       chai
         .request(server)
         .patch('/api/v1/complaints/500')
+        .set('token', token)
         .send({
           permissionGranted: false,
         })
@@ -422,6 +500,7 @@ describe('API Routes', () => {
       chai
         .request(server)
         .delete('/api/v1/complaints/32')
+        .set('token', token)
         .end((error, response) => {
           response.should.have.status(200);
           response.should.be.json;
@@ -437,6 +516,7 @@ describe('API Routes', () => {
       chai
         .request(server)
         .delete('/api/v1/complaints/33')
+        .set('token', token)
         .end((error, response) => {
           response.should.have.status(422);
           response.should.be.json;
