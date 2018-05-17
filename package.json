@@ -1,10 +1,10 @@
 {
-  "name": "roboReport",
+  "name": "robo-report",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "eslint": "./node_modules/.bin/eslint public/**/*.js server.js",
+    "eslint": "./node_modules/.bin/eslint server.js public/**/*.js test/*.js routes/*.js",
     "start": "node server.js",
     "test": "NODE_ENV=test mocha --exit"
   },

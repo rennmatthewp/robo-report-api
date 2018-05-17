@@ -1,11 +1,13 @@
+/* eslint-disable no-unused-expressions */
+
 const chai = require('chai');
 const chaiHttp = require('chai-http');
 const { database } = require('../routes/apiRoutes');
 const server = require('../server');
 
-chai.use(chaiHttp);
-const { expect } = chai;
+/* eslint-disable-next-line */
 const should = chai.should();
+chai.use(chaiHttp);
 
 describe('Client Routes', () => { });
 
@@ -28,7 +30,7 @@ describe('API Routes', () => {
         .get('/api/v1/users')
         .end((error, response) => {
           response.should.have.status(200);
-          expect(response).to.be.json;
+          response.should.be.json;
           response.body.should.be.an('array');
           response.body.length.should.equal(33);
           response.body[0].should.have.property('id', 1);
@@ -47,12 +49,12 @@ describe('API Routes', () => {
   });
 
   describe('GET /api/v1/users/:id', () => {
-    it('should return a single user by their ID', (done) => {
+    it('should return a single user by their id', (done) => {
       chai.request(server)
         .get('/api/v1/users/1')
         .end((error, response) => {
           response.should.have.status(200);
-          expect(response).to.be.json;
+          response.should.be.json;
           response.body.should.be.an('object');
           response.body.should.have.property('id', 1);
           response.body.should.have.property('firstName', 'Jeffery');
@@ -74,26 +76,26 @@ describe('API Routes', () => {
         .end((error, response) => {
           response.should.have.status(404);
           response.should.be.json;
-          response.body.should.have.property('error', 'Could not find user with id 500.');
+          response.body.should.have.property('error', 'Could not find user with id=500.');
           done();
         });
     });
   });
 
   describe('POST /api/v1/users', () => {
-    it('should add a new user to the database and return the new ID', (done) => {
+    it('should add a new user to the database and return the new id', (done) => {
       chai.request(server)
         .post('/api/v1/users')
         .send({
-          firstName: "Jon",
-          lastName: "Sweet",
-          email: "abcdef@hijklmnop",
-          phone: "321-765-9877",
-          phoneType: "wireless",
-          address: "123 Main",
-          city: "Denver",
-          state: "CO",
-          zipcode: "90210"
+          firstName: 'Jon',
+          lastName: 'Sweet',
+          email: 'abcdef@hijklmnop',
+          phone: '321-765-9877',
+          phoneType: 'wireless',
+          address: '123 Main',
+          city: 'Denver',
+          state: 'CO',
+          zipcode: '90210',
         })
         .end((error, response) => {
           response.should.have.status(201);
@@ -107,14 +109,14 @@ describe('API Routes', () => {
       chai.request(server)
         .post('/api/v1/users')
         .send({
-          lastName: "Sweet",
-          email: "abcdef@hijklmnop",
-          phone: "049-765-9877",
-          phoneType: "wireless",
-          address: "123 Main",
-          city: "Denver",
-          state: "CO",
-          zipcode: "90210"
+          lastName: 'Sweet',
+          email: 'abcdef@hijklmnop',
+          phone: '049-765-9877',
+          phoneType: 'wireless',
+          address: '123 Main',
+          city: 'Denver',
+          state: 'CO',
+          zipcode: '90210',
         })
         .end((error, response) => {
           response.should.have.status(422);
@@ -122,7 +124,7 @@ describe('API Routes', () => {
           response.body.should.have.property('error', 'Expected format: {firstName: <String>, lastName: <String>, email: <String>, phone: <String>, phoneType: <String>, address: <String>, city: <String>, state: <String>, zipcode: <String>}. Missing required property firstName.');
           done();
         });
-    })
+    });
   });
 
   describe('GET /api/v1/complaints', () => {
@@ -154,7 +156,7 @@ describe('API Routes', () => {
   });
 
   describe('GET /api/v1/complaints/:id', () => {
-    it('should return a complaint by its ID', (done) => {
+    it('should return a complaint by its id', (done) => {
       chai.request(server)
         .get('/api/v1/complaints/1')
         .end((error, response) => {
@@ -185,30 +187,30 @@ describe('API Routes', () => {
         .end((error, response) => {
           response.should.have.status(404);
           response.should.be.json;
-          response.body.should.have.property('error', 'Could not find complaint with id 500.');
+          response.body.should.have.property('error', 'Could not find complaint with id=500.');
           done();
         });
     });
   });
 
   describe('POST api/v1/complaints', () => {
-    it('should add a new complaint to the database and return the new ID', (done) => {
+    it('should add a new complaint to the database and return the new id', (done) => {
       chai.request(server)
         .post('/api/v1/complaints')
         .send({
-          "user_id": 1,
-          "isSoliciting": true,
-          "subject": "Robocall",
-          "description": "A woman wants to eliminate my credit card debt",
-          "callerIdNumber": "303-123-1234",
-          "callerIdName": "unknown",
-          "date": "04/04/2018",
-          "time": "5:00 PM",
-          "type": "Prerecorded Voice",
-          "altPhone": "303-123-1234",
-          "permissionGranted": false,
-          "businessName": null,
-          "agentName": null
+          user_id: 1,
+          isSoliciting: true,
+          subject: 'Robocall',
+          description: 'A woman wants to eliminate my credit card debt',
+          callerIdNumber: '303-123-1234',
+          callerIdName: 'unknown',
+          date: '04/04/2018',
+          time: '5:00 PM',
+          type: 'Prerecorded Voice',
+          altPhone: '303-123-1234',
+          permissionGranted: false,
+          businessName: null,
+          agentName: null,
         })
         .end((error, response) => {
           response.should.have.status(201);
@@ -217,32 +219,32 @@ describe('API Routes', () => {
           done();
         });
     });
-    
+
     it('should return an error with status 422 if a required param is missing', (done) => {
       chai.request(server)
         .post('/api/v1/complaints')
         .send({
-          "user_id": 1,
-          "isSoliciting": true,
-          "subject": "Robocall",
-          "description": "A woman wants to eliminate my credit card debt",
-          "callerIdName": "unknown",
-          "date": "04/04/2018",
-          "time": "5:00 PM",
-          "type": "Prerecorded Voice",
-          "altPhone": "303-123-1234",
-          "permissionGranted": false,
-          "businessName": null,
-          "agentName": null
+          user_id: 1,
+          isSoliciting: true,
+          subject: 'Robocall',
+          description: 'A woman wants to eliminate my credit card debt',
+          callerIdName: 'unknown',
+          date: '04/04/2018',
+          time: '5:00 PM',
+          type: 'Prerecorded Voice',
+          altPhone: '303-123-1234',
+          permissionGranted: false,
+          businessName: null,
+          agentName: null,
         })
         .end((error, response) => {
           response.should.have.status(422);
           response.should.be.json;
-          response.body.should.have.property('error', "Expected format: {user_id: <Integer>, isSoliciting: <String>, subject: <String>, description: <String>, callerIdNumber: <String>, callerIdName: <String>, date: <String>, time: <String>, type: <String>, altPhone: <String>, permissionGranted: <Boolean>, businessName: <String>, agentName: <String>}. Missing required property callerIdNumber.");
+          response.body.should.have.property('error', 'Expected format: {user_id: <Integer>, isSoliciting: <String>, subject: <String>, description: <String>, callerIdNumber: <String>, callerIdName: <String>, date: <String>, time: <String>, type: <String>, altPhone: <String>, permissionGranted: <Boolean>, businessName: <String>, agentName: <String>}. Missing required property callerIdNumber.');
           done();
         });
-    })
-  })
+    });
+  });
 
   describe('PATCH api/v1/complaints', () => {
     it('should update a complaint selected by id', (done) => {
@@ -255,34 +257,45 @@ describe('API Routes', () => {
           response.should.have.status(201);
           response.should.be.json;
           response.body.should.be.an('object');
-          response.body.should.have.property('message', 'updated complaint with ID=1')
+          response.body.should.have.property('message', 'updated complaint with id=1');
           done();
-        })
+        });
     });
-    
+
     it('should return an error with status 422 if patching a column that doesn\'t exist', (done) => {
       chai.request(server)
         .patch('/api/v1/complaints/1')
         .send({
-          randomProperty: true
+          randomProperty: true,
         })
         .end((error, response) => {
           response.should.have.status(422);
-          response.body.should.have.property('error', 'Cannot update complaint, invalid property provided. Valid properties include: {user_id: <Integer>, isSoliciting: <String>, subject: <String>, description: <String>, callerIdNumber: <String>, callerIdName: <String>, date: <String>, time: <String>, type: <String>, altPhone: <String>, permissionGranted: <Boolean>, businessName: <String>, agentName: <String>}')
+          response.body.should.have.property('error', 'Cannot update complaint, invalid property provided. Valid properties include: {user_id: <Integer>, isSoliciting: <String>, subject: <String>, description: <String>, callerIdNumber: <String>, callerIdName: <String>, date: <String>, time: <String>, type: <String>, altPhone: <String>, permissionGranted: <Boolean>, businessName: <String>, agentName: <String>}');
           done();
         });
     });
   });
 
-
   describe('DELETE /api/v1/complaints/:id', () => {
-    it('should delete a complaint by its ID', (done) => {
+    it('should delete a complaint by its id', (done) => {
       chai.request(server)
-        .delete('/api/v1/complaints/33')
+        .delete('/api/v1/complaints/32')
         .end((error, response) => {
           response.should.have.status(200);
           response.should.be.json;
-          response.body.should.have.property('message', 'Deleted complaint with ID 33.')
+          response.body.should.have.property('message', '1 row(s) deleted. Deleted complaint with id=32.');
+          done();
+        });
+    });
+
+    it('should return an error with status 422 if no complaint is found', (done) => {
+      chai.request(server)
+        .delete('/api/v1/complaints/33')
+        .end((error, response) => {
+          response.should.have.status(422);
+          response.should.be.json;
+          response.body.should.be.an('object');
+          response.body.should.have.property('error', '0 row(s) deleted. No complaint found with id=33');
           done();
         });
     });
