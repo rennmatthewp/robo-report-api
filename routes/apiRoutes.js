@@ -168,4 +168,11 @@ router.patch('/complaints/:id', (request, response) => {
     })
 });
 
+router.delete('/complaints/:id', (request, response) => {
+  const { id } = request.params;
+  database('complaints').where('id', id).del()
+    .then(() => response.status(200).json({ message: `Deleted complaint with ID ${id}.` }))
+    .catch(error => response.status(500).json({ error }))
+});
+
 module.exports = { router, database };

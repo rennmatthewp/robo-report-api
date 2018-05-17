@@ -1,5 +1,3 @@
-/* eslint-disable no-unused-vars */
-/* eslint-disable no-unused-expressions */
 const chai = require('chai');
 const chaiHttp = require('chai-http');
 const { database } = require('../routes/apiRoutes');
@@ -246,4 +244,47 @@ describe('API Routes', () => {
     })
   })
 
+  describe('PATCH api/v1/complaints', () => {
+    it('should update a complaint selected by id', (done) => {
+      chai.request(server)
+        .patch('/api/v1/complaints/1')
+        .send({
+          isSoliciting: true,
+        })
+        .end((error, response) => {
+          response.should.have.status(201);
+          response.should.be.json;
+          response.body.should.be.an('object');
+          response.body.should.have.property('message', 'updated complaint with ID=1')
+          done();
+        })
+    });
+    
+    it('should return an error with status 422 if patching a column that doesn\'t exist', (done) => {
+      chai.request(server)
+        .patch('/api/v1/complaints/1')
+        .send({
+          randomProperty: true
+        })
+        .end((error, response) => {
+          response.should.have.status(422);
+          response.body.should.have.property('error', 'Cannot update complaint, invalid property provided. Valid properties include: {user_id: <Integer>, isSoliciting: <String>, subject: <String>, description: <String>, callerIdNumber: <String>, callerIdName: <String>, date: <String>, time: <String>, type: <String>, altPhone: <String>, permissionGranted: <Boolean>, businessName: <String>, agentName: <String>}')
+          done();
+        });
+    });
+  });
+
+
+  describe('DELETE /api/v1/complaints/:id', () => {
+    it('should delete a complaint by its ID', (done) => {
+      chai.request(server)
+        .delete('/api/v1/complaints/33')
+        .end((error, response) => {
+          response.should.have.status(200);
+          response.should.be.json;
+          response.body.should.have.property('message', 'Deleted complaint with ID 33.')
+          done();
+        });
+    });
+  });
 });
