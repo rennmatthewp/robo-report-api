@@ -56,7 +56,7 @@ const requiredComplaintParameters = [
 
 router.post('/authenticate', (request, response) => {
   const { appName, email } = request.body;
-  const authorizedEmail = email.slice(email.length - 10) === process.env.auth_email;
+  const authorizedEmail = email.split('@').pop() === process.env.auth_email;
 
   if (email && appName) {
     jwt.sign({ appName, email, admin: authorizedEmail }, process.env.secret_key, (error, token) => {
