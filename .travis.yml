@@ -1,0 +1,16 @@
+language: node_js
+node_js:
+- node
+services:
+- postgresql
+before_script:
+- psql -c 'CREATE DATABASE travis_test;' -U postgres
+notifications:
+  email: false
+deploy:
+  provider: heroku
+  api_key:
+    secure: FUYFtim6bsBk+8g05Dr/LkI/qspPj0Pi+vO4bXu/D/XV3E7S4NZScz21SriuBuu8B15lN+g97NNCj/tN7M2vbe+mW8l6bUQK62ez5AFJkDQALHItduHM6cCLqcMUKVpBcB7jF5YhWpnAsZdyK+mLEHXGaMKzddWr+01/tdDPqpYzeN/qq0hFkDNyixYDUoDSJJr0ULtTyjFXrQw5imfQ/CPIjYQnVTOSZKbbFNFiXEfteiya+uZJtm+E9OmuHRczrMOB+TmGDxREKk3SMur5n5vApnksRKk6VIhe08SI/0V99O+RMQy8L6PXVq9B9JQzOigJf8hB6CaKoBxVv+B39Tq8OLTM8eJAHadVPmioMxOsKs7+8CS/u+/uxtnr8GiXKLHCvKA1MjF1zWIdoyGCHja8UG4huzWOON7BmQX2Xiq+hYA1uj2fWtXo1drStXcL7pXI6rMdnJAsswEAzn+R5BBqINQeiTJAy2WVgUEEG7N2cMMI1aPo8ly1EFcNxS/AcVdcu+C6uU0VAijP+3/5/GOh1t7ope6++pHz6zIvpl3cLKqXXC8frGakhLYcbFw92CazN+L7OkG5Mr1qx8AKwggeabKra4/humBKk9/QsHqqTZDtytPeCt3Yq9QoHIrwwSwmNz+hnrPByLaom5CTf01Ct3IGrQwfuup0RMF/AeI=
+  app: roboreport-api
+  on:
+    repo: rennmatthewp/roboReport
