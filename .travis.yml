@@ -1,15 +1,12 @@
 language: node_js
 node_js:
-  - node
+- node
 services:
-  - postgresql
+- postgresql
 before_script:
-  - psql -c 'CREATE DATABASE robo_report_test;' -U postgres
+- psql -c 'CREATE DATABASE robo_report_test;' -U postgres
 notifications:
   email: false
-env: 
-  - auth_email=turing.io
-  - secret_key=overtheline
 deploy:
   provider: heroku
   api_key:
@@ -17,3 +14,7 @@ deploy:
   app: roboreport-api
   on:
     repo: rennmatthewp/roboReport
+env:
+  matrix:
+  - secure: e7eJuefDFmAbHudHxAeejEn9woEkLITjQa5D4dXzaZ0JCFPsWQIMuz9uUONkmWX93tcdHLGu5i7xNpCMk83hH6mQTlMBUNvFbFWMqO1tCADHbJQuU46YxQwV5k8thSFrfzJveMPp3wTPU99TGhvXrBcODJGnOuexkIO0y1fdL1qq6ndcZqlExsbtgJxiNEfYaOysGGuwkrI0L5OZFBc+eGq44+I9L3oyOuFauqJiBaCjSh8Zj5SnJ4hOqg/6jlNuhJ+COKuwUJ8Lqt6lVvH6Z0+tWwA7ZVQIvK0L14ZR8XpOaau+EtX4PGGk7kZ03uf+mGQE2ws1Al4+YaE62tZLWcWVz/O3UwJKdix3uFoJVxQoKgMsyktTERv6qLWOVvM8H1i4wN2FhraAARvZ14FdxcgsZjgL3BNMpfdVDo95oLzMqjUBpwQ38fpFs+K6TH7Oy7oh30ta0hSfsrB+F4SVIbiJXtsBv7UiSQvF5YIqZisKUJ5EIgT7WVol9G69zSxHM65Ky3/a/8iUXYFAoOMUj+g4PgET0yiCtbipCXK3o1SkwJHwmn5LQInGBRcK5X7Nv9Oamsit+T05KpyZZxKo2Y8mgRYFQeHnSXjIdrAtnSPdWGvMa78Ep4ZDiDfOF0edaliXSqPLIOLYDzDGzZrBeudRFZ5Kalt82V91ulG5xjY=
+  - secure: OV64d0y5TjzRY/CHpO4HphNtn5ZBZDRI5tHQe0Fz1cIDzwwJFl59EAIRm8AEsqEj/RgqxeG11Wh1tyoA55fcj+jAmXDEoylvgy/BF2cR6eN64HPzcECQSExSLxniQ/SYDJPItnTXT+xXi+bfS35fwm2xkmruDrY1SXOtDEp4ahR5yx0rc7B6jNz4tfNN4DP5q3In7Z12Y1IqoUUmGMtvfxp1FLtIZKUZx3qVWMxQVmgUdmCOV0NKmTFs/llRtm5EDiIVRAbUhO4O1CUs7/0oqFZnhszQtl/Xh4erCbFVDXZXbTDIsuVLkscdjQwKMEV8XltzTAP3/rF+AIxE6/7rDzkN823tY8uxmOpCIgFe/b8rlZcDZJ/MmkavHns7WGKjn8/boONNyn9Bb2Xy02N2+Gbwwxq3WvDwOCeL0JAdYJYdUYgaueZbC5cmSVxUW6okE5xXRXBlL4TY1G3WWfWmaCbn/QDcMT6enf2wOHNYZWFudFEsuG5F6INVtZDwW3voXFipMnObiAkCuAYKw6rAhtWC4Ny7VEpAgdzo5qvzb0NNIO31mxc6ma968WnSKq639wFh9QKK/U20kuFxGw3o3nrP8m6DGqQ3raBvlm0SNTe9gWKtok1NjVZCcP46HLhCj5UPy3nHHLrPrgJ+3rUpwDy8VH7DeWz/aPGu8GqHGc8=
