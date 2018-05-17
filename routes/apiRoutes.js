@@ -1,12 +1,30 @@
 /* eslint-disable no-restricted-syntax */
 
 const express = require('express');
+const jwt = require('jsonwebtoken');
 
 const environment = process.env.NODE_ENV || 'development';
 const configuration = require('../knexfile')[environment];
 const database = require('knex')(configuration);
 
 const router = express.Router();
+
+const checkAuth = (request, response, next) => {
+  const token = request.header('token');
+  if (!token) {
+    return response.status(403).send({ error: 'You are not authorized.' });
+  }
+  jwt.verify(token, process.env.secret_key, (error, decoded) => {
+    if (error) {
+      return response.status(403).send({ error: 'You are not authorized to use this endpoint.' });
+    }
+    if (decoded.admin) {
+      return next();
+    }
+    return null;
+  });
+  return null;
+};
 
 const requiredUserParameters = [
   'firstName',
@@ -36,6 +54,23 @@ const requiredComplaintParameters = [
   'agentName',
 ];
 
+router.post('/authenticate', (request, response) => {
+  const { appName, email } = request.body;
+  const authorizedEmail = email.slice(email.length - 10) === process.env.auth_email;
+
+  if (email && appName) {
+    jwt.sign({ appName, email, admin: authorizedEmail }, process.env.secret_key, (error, token) => {
+      if (error) {
+        return response.status(403).send({ error: 'You are not authorized.' });
+      }
+      return response.status(201).json({ token });
+    });
+  } else {
+    return response.status(402).json({ error: 'Invalid request.' });
+  }
+  return null;
+});
+
 router.get('/users', (request, response) => {
   database('users')
     .select()
@@ -58,7 +93,7 @@ router.get('/users/:id', (request, response) => {
     .catch(error => response.status(500).json(error));
 });
 
-router.post('/users', (request, response) => {
+router.post('/users', checkAuth, (request, response) => {
   const user = request.body;
 
   for (const parameter of requiredUserParameters) {
@@ -75,7 +110,7 @@ router.post('/users', (request, response) => {
     .catch(error => response.status(500).json(error));
 });
 
-router.patch('/users/:id', (request, response) => {
+router.patch('/users/:id', checkAuth, (request, response) => {
   const { id } = request.params;
   const revision = request.body;
   let correctFormat = true;
@@ -109,7 +144,7 @@ router.patch('/users/:id', (request, response) => {
     .catch(error => response.status(500).json({ error }));
 });
 
-router.delete('/users/:id', (request, response) => {
+router.delete('/users/:id', checkAuth, (request, response) => {
   const { id } = request.params;
   database('complaints')
     .where('user_id', id)
@@ -155,7 +190,7 @@ router.get('/complaints/:id', (request, response) => {
     .catch(error => response.status(500).json(error));
 });
 
-router.post('/complaints', (request, response) => {
+router.post('/complaints', checkAuth, (request, response) => {
   const complaint = request.body;
 
   for (const parameter of requiredComplaintParameters) {
@@ -172,7 +207,7 @@ router.post('/complaints', (request, response) => {
     .catch(error => response.status(500).json(error));
 });
 
-router.patch('/complaints/:id', (request, response) => {
+router.patch('/complaints/:id', checkAuth, (request, response) => {
   const { id } = request.params;
   const revision = request.body;
   let correctFormat = true;
@@ -206,7 +241,7 @@ router.patch('/complaints/:id', (request, response) => {
     .catch(error => response.status(500).json({ error }));
 });
 
-router.delete('/complaints/:id', (request, response) => {
+router.delete('/complaints/:id', checkAuth, (request, response) => {
   const { id } = request.params;
   database('complaints')
     .where('id', id)

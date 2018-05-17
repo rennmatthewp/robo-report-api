@@ -2,16 +2,18 @@ const express = require('express');
 const { router } = require('./routes/apiRoutes');
 const bodyParser = require('body-parser');
 
-const app = express();
+require('dotenv').config();
 
-app.set('port', process.env.PORT || 3000);
+const server = express();
 
-app.use(bodyParser.json());
-app.use('/', express.static('public'));
-app.use('/api/v1', router);
+server.set('port', process.env.PORT || 3000);
 
-app.listen(app.get('port'), () => { // eslint-disable-next-line
-  console.log(`roboReport server listening at ${app.get('port')}`);
+server.use(bodyParser.json());
+server.use('/', express.static('public'));
+server.use('/api/v1', router);
+
+server.listen(server.get('port'), () => { // eslint-disable-next-line
+  console.log(`roboReport server listening at ${server.get('port')}`);
 });
 
-module.exports = app;
+module.exports = server;
