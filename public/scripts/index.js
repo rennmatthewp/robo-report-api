@@ -1,8 +1,7 @@
 const displayResponseMessage = (response) => {
-  const responseDiv = document.createElement('div');
-  const responseMessage = document.createTextNode(response.token || response.error);
-  responseDiv.appendChild(responseMessage);
-  document.querySelector('#response-display').appendChild(responseDiv);
+  const title = response.token ? 'Token: ' : '';
+  const responseMessage = `<p>${title}${response.token || response.error}</p>`;
+  document.querySelector('#response-display').innerHTML = responseMessage;
 };
 
 const postCredentials = (email, appName) => {

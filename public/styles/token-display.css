@@ -1,0 +1,9 @@
+.token-display p {
+  width: 50%;
+  height: 100%;
+  font-size: 3rem;
+  word-wrap: break-word;
+  margin: auto;
+  padding: 2rem;
+  background-color: rgba(256, 256, 256, 0.8);
+}
