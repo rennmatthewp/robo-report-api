@@ -1,4 +1,5 @@
-# Robo-Report
+# Robo-Report 
+[![Build Status](https://travis-ci.org/rennmatthewp/roboReport.svg?branch=master)](https://travis-ci.org/rennmatthewp/roboReport)
 
 A back-end utility for storing FCC unwanted call complaint data in a postgres database with a CRUD API.
 
