@@ -1,10 +1,12 @@
 language: node_js
 node_js:
-- node
+  - node
 services:
-- postgresql
+  - postgresql
 before_script:
-- psql -c 'CREATE DATABASE robo_report_test;' -U postgres
+  - psql -c 'CREATE DATABASE robo_report_test;' -U postgres
+script:
+  - npm run eslint
 notifications:
   email: false
 deploy:
