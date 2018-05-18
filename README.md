@@ -170,6 +170,32 @@ GET api/v1/complaints/:id
   }
 ```
 
+GET api/v1/complaints?city=QUERY
+
+* Returns an array of complaints whose user matches the city queried.
+
+```
+[
+  {
+    "isSoliciting": true,
+    "subject": "Robocall",
+    "description": "A woman wants to eliminate my credit card debt",
+    "callerIdNumber": "303-123-1234",
+    "callerIdName": "unknown",
+    "date": "04/04/2018",
+    "time": "5:00 PM",
+    "type": "Prerecorded Voice",
+    "altPhone": "303-123-1234",
+    "permissionGranted": false,
+    "businessName": null,
+    "agentName": null
+  },
+  .
+  .
+  .
+]
+```
+
 POST api/v1/users
 
 * Creates a new user in the database and returns the newly generated ID

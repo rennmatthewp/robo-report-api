@@ -169,10 +169,25 @@ router.delete('/users/:id', checkAuth, (request, response) => {
 });
 
 router.get('/complaints', checkAuth, (request, response) => {
-  database('complaints')
-    .select()
-    .then(complaints => response.status(200).json(complaints))
-    .catch(error => response.status(500).json({ error }));
+  const { city } = request.query;
+  if (city) {
+    database('users')
+      .where('city', city)
+      .select()
+      .then((users) => {
+        const ids = users.map(user => user.id);
+        database('complaints')
+          .whereIn('user_id', ids)
+          .select()
+          .then(complaints => response.status(200).json(complaints))
+          .catch(error => response.status(500).json({ error }));
+      });
+  } else {
+    database('complaints')
+      .select()
+      .then(complaints => response.status(200).json(complaints))
+      .catch(error => response.status(500).json({ error }));
+  }
 });
 
 router.get('/complaints/:id', checkAuth, (request, response) => {

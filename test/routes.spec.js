@@ -361,6 +361,20 @@ describe('API Routes', () => {
         });
     });
 
+    it('should return complaints matching a city query', (done) => {
+      chai
+        .request(server)
+        .get('/api/v1/complaints?city=Denver')
+        .set('token', token)
+        .end((error, response) => {
+          response.should.have.status(200);
+          response.should.be.json;
+          response.body.should.be.an('array');
+          response.body.length.should.equal(2);
+          done();
+        });
+    });
+
     it('should return an error with status 404 if the complaint is not found', (done) => {
       chai
         .request(server)
