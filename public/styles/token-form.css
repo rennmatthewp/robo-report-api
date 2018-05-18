@@ -1,13 +1,12 @@
 .token-form {
   display: flex;
   flex-direction: column;
-  margin: 2rem auto;
+  margin: 0rem auto;
   min-width: 320px;
   padding: 2rem;
   width: 50%;
   font-size: 2rem;
   background-color: rgba(256, 256, 256, 0.8);
-  border-radius: 10px;
 }
 
 .token-form__prompt,
@@ -32,4 +31,5 @@
   height: 4rem;
   margin: 2rem auto;
   font-size: 2rem;
+  box-shadow: 1px 1px 1px gray;
 }

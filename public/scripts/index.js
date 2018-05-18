@@ -1,5 +1,6 @@
 const displayResponseMessage = (response) => {
-  const responseMessage = `<p>${response.token || response.error}</p>`;
+  const title = response.token ? 'Token: ' : '';
+  const responseMessage = `<p>${title}${response.token || response.error}</p>`;
   document.querySelector('#response-display').innerHTML = responseMessage;
 };
 
