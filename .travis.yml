@@ -1,13 +1,13 @@
 language: node_js
 node_js:
-  - node
+- node
 services:
-  - postgresql
+- postgresql
 before_script:
-  - psql -c 'CREATE DATABASE robo_report_test;' -U postgres
+- psql -c 'CREATE DATABASE robo_report_test;' -U postgres
 script:
-  - npm run eslint
-  - npm test
+- npm run eslint
+- npm test
 notifications:
   email: false
 deploy:
@@ -19,4 +19,4 @@ deploy:
     repo: rennmatthewp/roboReport
 env:
   matrix:
-    secure: mHY27i4a9GftYWc9D3og2szD8tOdbBn6CucIeWxyxmRNekN2pZp7SHNCnrlN4j27qg4zEoRedOmSxtD5J4mhDjuO5o5NaCgNmrdVO0lwBwpkM90WFLt2DlU+O+oKx1GDvpi0ikZKPcCdNIb4w/5rhSjALIDVoQG8iMCnDyoO3kC5fFNMDzePtsIINj6ATPvQ/11e+x6zM0vYaw15UhCV8UJNRqOus6HdyqSaWiV+Vlg9ikc5je9Pf5RM82tIwJHHPCuVzcCwjjByCSDrfKIXEEF+S6NwEN7vWmtqlPUVoxGZNKi7knLh0xPrFP3FqzqusRYBsXZS/lRtfniBYSt9zEh0+UPIHRy8Q08I7lT/OGkTTnNAAWQCXNPxKvaw9+1oldVzPQ8mbDmBAvXVZNPgPXzn3nMOG0NZA5bc7hyYBowFLi6kNsKEpFbYhEvkGKUsncJchZeP5LQGVQnsJMC8eyXOPQw+8cUAEPDa6lUCVUDzdunjj3eo8LF6YBRWTIxhbhdLsPaDlxlHXZFJ50P6gnT5s0Po7fyZn1mmlOZywfGvCprJtaSj9iLGiZGngMQmNJqYRzah5CHft7xBxpSBpvnjux6YFmJBfFnPDoCMmQD3AM8mbS6R4q4F50d3AnCe2H7gbi+1NosusercNf2uptI0vL3D2x7h3EFuO7WG874=
+    secure: aqWi1Q/+ee+FkrhxcMmcnt4O4D6r7cy5gHEA4TGv1sIPPspEhFDQ+QZGjRFmz31JGq86SYZDw6hq+p2ti/6LxbcyyoB0/3VUmcd/T5Gg+LGtLmBX5z//GittAOW8KOPEni/FD1xNlGPuB+oEMMOrqGVAWZjQHy2wVTZvd1JHpMRnp+fXjVRN1sZVghAmi2zCvmJ6tRECwytnT7t0eRLhssUVXMjLTPMW46VXortoUjSTvuMRmcxWNwtPX7+jy1qY/T0N2020n/myVHVG2C2UEJPlhtl0k8njZdqfnqv3Y8cji38DcrleOJHxtkcAowfyIvz5LOzJXZkYD9UpZpFzpRxeS14OA25GGRVl3APUgvYiQa49vpiYaTvQf8HLMxSa4cIGCl5NveOUr1Qw3HbRgH6GMbpWjRY48OsGD6tFoHO0qHzF4tNouDp9cVQXEzutuBXEH3l/l3LNJVbigpfYuUHwojPurNKx2ssvlklBDMsU/tKDW7D7rG+J8etNZdOcKg3h/wb4gQ3TrUMhviagGwsplv3/6dQQqbkrCxmRcKN/FFp/hv/1qqr+GjR3Okmz8+RS8ym87U/h7i1QZyUhi3+ptQ8Kz2FKsPiZ2azvWrXhDCusOcl2GKxm3n40ChRM3g31DbtejUaOCBUIfCuteWs/YLT/BR7vuotnLyHBBjI=
