@@ -1,0 +1,35 @@
+.token-form {
+  display: flex;
+  flex-direction: column;
+  margin: 2rem auto;
+  min-width: 320px;
+  padding: 2rem;
+  width: 50%;
+  font-size: 2rem;
+  background-color: rgba(256, 256, 256, 0.8);
+  border-radius: 10px;
+}
+
+.token-form__prompt,
+.token-form__input {
+  margin: 1rem;
+}
+
+.token-form__prompt {
+  font-weight: bold;
+}
+
+.token-form__label {
+  margin: 1rem 1rem 0 1rem;
+}
+
+.token-form__input {
+  font-size: 2rem;
+}
+
+.token-form__button {
+  width: 15rem;
+  height: 4rem;
+  margin: 2rem auto;
+  font-size: 2rem;
+}

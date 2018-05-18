@@ -1,22 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>Robo Report API</title>
+  <link href="https://fonts.googleapis.com/css?family=Roboto:400,700" rel="stylesheet">
+  <link rel="stylesheet" href="styles/styles.css">
+  <title>Robo-Report API</title>
 </head>
+
 <body>
   <header>
-    <h1>Robo Report API</h1>
-    <h3>Submit your credentials to receive a jwt.</h3>
+    <h1>Robo-Report API</h1>
+    <a target="_blank" href="https://github.com/rennmatthewp/roboReport">
+      <img src="images/GitHub-Mark-64px.png" alt="github logo">
+    </a>
   </header>
-  <form>
-    <input type="email" name="email" placeholder="Email">
-    <input type="text" name="appName" placeholder="App Name">
-    <button id="submit-button">Submit</button>
+  <form class="token-form">
+    <p class="token-form__prompt">Submit your credentials to receive an authorization token.</p>
+    <label class="token-form__label" for="token-form__email">Email</label>
+    <input class="token-form__input" id="token-form__email" type="email" name="email">
+    <label class="token-form__label" for="token-form__app-name">App Name</label>
+    <input class="token-form__input" id="token-form__app-name" type="text" name="appName">
+    <button class="token-form__button" id="submit-button">Submit</button>
   </form>
-  <section id="response-display"></section>
+  <section class="token-display" id="response-display"></section>
   <script src="./scripts/index.js"></script>
 </body>
+
 </html>
