@@ -10,14 +10,17 @@ server.set('port', process.env.PORT || 3000);
 
 server.use(bodyParser.json());
 server.use((request, response, next) => {
-  response.header('Access-Control-Allow-Origin', '*');
+  response.header(
+    'Access-Control-Allow-Origin',
+    '*',
+  );
   response.header(
     'Access-Control-Allow-Methods',
-    'GET,PUT,POST,DELETE,PATCH',
+    'GET,PATCH,POST,DELETE',
   );
   response.header(
     'Access-Control-Allow-Headers',
-    'Content-Type, Authorization, Content-Length, X-Requested-With',
+    'Content-Type, token',
   );
   next();
 });
