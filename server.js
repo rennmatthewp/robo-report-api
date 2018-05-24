@@ -8,14 +8,18 @@ const server = express();
 
 server.set('port', process.env.PORT || 3000);
 
-server.use(bodyParser.json());
 server.use((request, response, next) => {
   response.header(
     'Access-Control-Allow-Origin',
     '*',
   );
+  response.header(
+    'Access-Control-Allow-Headers',
+    'Content-Type,token',
+  );
   next();
 });
+server.use(bodyParser.json());
 server.use('/', express.static('public'));
 server.use('/api/v1', router);
 
