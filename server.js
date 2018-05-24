@@ -14,14 +14,6 @@ server.use((request, response, next) => {
     'Access-Control-Allow-Origin',
     '*',
   );
-  response.header(
-    'Access-Control-Allow-Methods',
-    'GET,PATCH,POST,DELETE',
-  );
-  response.header(
-    'Access-Control-Allow-Headers',
-    'Content-Type, token',
-  );
   next();
 });
 server.use('/', express.static('public'));
