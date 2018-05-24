@@ -14,8 +14,12 @@ server.use('/api/v1', router);
 server.use((request, response, next) => {
   response.header('Access-Control-Allow-Origin', '*');
   response.header(
+    'Access-Control-Allow-Methods',
+    'GET,PUT,POST,DELETE,PATCH',
+  );
+  response.header(
     'Access-Control-Allow-Headers',
-    'Origin, X-Requested-With, Content-Type, Accept',
+    'Content-Type, Authorization, Content-Length, X-Requested-With',
   );
   next();
 });
