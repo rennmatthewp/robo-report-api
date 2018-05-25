@@ -14,16 +14,15 @@ const checkAuth = (request, response, next) => {
   if (!token) {
     return response.status(403).send({ error: 'You are not authorized.' });
   }
-  jwt.verify(token, process.env.secret_key, (error, decoded) => {
+  return jwt.verify(token, process.env.secret_key, (error, decoded) => {
     if (error) {
       return response.status(403).send({ error: 'You are not authorized to use this endpoint.' });
     }
     if (decoded.admin) {
       return next();
     }
-    return null;
+    return response.status(403).send({ error: 'You are not authorized to use this endpoint.' });
   });
-  return null;
 };
 
 const requiredUserParameters = [
@@ -56,7 +55,7 @@ const requiredComplaintParameters = [
 
 router.post('/authenticate', (request, response) => {
   const { appName, email } = request.body;
-  const authorizedEmail = email.split('@').pop() === process.env.auth_email;
+  const authorizedEmail = process.env.auth_emails.split(' ').includes(email);
 
   if (email && appName) {
     jwt.sign({ appName, email, admin: authorizedEmail }, process.env.secret_key, (error, token) => {
