@@ -265,14 +265,14 @@ describe('API Routes', () => {
     it('should delete a user by its id', (done) => {
       chai
         .request(server)
-        .delete('/api/v1/users/32')
+        .delete('/api/v1/users/2')
         .set('token', token)
         .end((error, response) => {
           response.should.have.status(200);
           response.should.be.json;
           response.body.should.have.property(
             'message',
-            '1 row(s) deleted. Deleted user with id: 32.',
+            '1 row(s) deleted. Deleted user with id: 2.',
           );
           done();
         });
@@ -289,7 +289,7 @@ describe('API Routes', () => {
           response.body.should.be.an('object');
           response.body.should.have.property(
             'error',
-            '0 row(s) deleted. No user found with id: 44',
+            '0 row(s) deleted. No complaint found with user_id: 44',
           );
           done();
         });

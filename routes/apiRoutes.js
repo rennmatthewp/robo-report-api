@@ -149,8 +149,13 @@ router.delete('/users/:id', checkAuth, (request, response) => {
   database('complaints')
     .where('user_id', id)
     .del()
-    .then(() => {
-      database('users')
+    .then((complaintsDelCount) => {
+      if (complaintsDelCount === 0) {
+        return response.status(422).json({
+          error: `${complaintsDelCount} row(s) deleted. No complaint found with user_id: ${id}`,
+        });
+      }
+      return database('users')
         .where('id', id)
         .del()
         .then((deleteCount) => {
