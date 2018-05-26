@@ -71,10 +71,24 @@ router.post('/authenticate', (request, response) => {
 });
 
 router.get('/users', checkAuth, (request, response) => {
-  database('users')
-    .select()
-    .then(users => response.status(200).json(users))
-    .catch(error => response.status(500).json({ error }));
+  const { email } = request.query;
+  if (email) {
+    database('users')
+      .where('email', email)
+      .select()
+      .then((user) => {
+        if (!user.length) {
+          return response.status(404).json({ error: `Could not find user with email: ${email}.` });
+        }
+        return response.status(200).json(user[0]);
+      })
+      .catch(error => response.status(500).json({ error }));
+  } else {
+    database('users')
+      .select()
+      .then(users => response.status(200).json(users))
+      .catch(error => response.status(500).json({ error }));
+  }
 });
 
 router.get('/users/:id', checkAuth, (request, response) => {

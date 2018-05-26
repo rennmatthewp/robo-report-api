@@ -109,6 +109,42 @@ describe('API Routes', () => {
           done();
         });
     });
+
+    it('should return the user matching an email query', (done) => {
+      chai
+        .request(server)
+        .get('/api/v1/users?email=thedude@gmail.com')
+        .set('token', token)
+        .end((error, response) => {
+          response.should.have.status(200);
+          response.should.be.json;
+          response.body.should.be.an('object');
+          response.body.should.have.property('id', 1);
+          response.body.should.have.property('firstName', 'Jeffery');
+          response.body.should.have.property('lastName', 'Lebowski');
+          response.body.should.have.property('email', 'thedude@gmail.com');
+          response.body.should.have.property('phone', '404-555-5555');
+          response.body.should.have.property('phoneType', 'Wireless');
+          response.body.should.have.property('address', '1091 S Mesa Dr');
+          response.body.should.have.property('city', 'Los Angeles');
+          response.body.should.have.property('state', 'CA');
+          response.body.should.have.property('zipcode', '90210');
+          done();
+        });
+    });
+
+    it('should return an error with status 404 if user with queried email not found', (done) => {
+      chai
+        .request(server)
+        .get('/api/v1/users?email=nope@nogo.com')
+        .set('token', token)
+        .end((error, response) => {
+          response.should.have.status(404);
+          response.should.be.json;
+          response.body.should.have.property('error', 'Could not find user with email: nope@nogo.com.');
+          done();
+        });
+    });
   });
 
   describe('GET /api/v1/users/:id', () => {
