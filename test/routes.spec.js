@@ -18,15 +18,17 @@ describe('API Routes', () => {
     database.migrate.rollback().then(() => {
       database.migrate.rollback().then(() => {
         database.migrate.rollback().then(() => {
-          database.migrate.latest().then(() =>
-            database.seed.run().then(() => {
-              token = jwt.sign({
-                email: 'robbie@turing.io',
-                appName: 'roboReport',
-                admin: true,
-              }, process.env.secret_key);
-              done();
-            }));
+          database.migrate.rollback().then(() => {
+            database.migrate.latest().then(() =>
+              database.seed.run().then(() => {
+                token = jwt.sign({
+                  email: process.env.test_email,
+                  appName: 'roboReport',
+                  admin: true,
+                }, process.env.secret_key);
+                done();
+              }));
+          });
         });
       });
     });
@@ -37,7 +39,7 @@ describe('API Routes', () => {
       chai.request(server)
         .post('/api/v1/authenticate')
         .send({
-          email: 'robbie@turing.io',
+          email: process.env.test_email,
           appName: 'gonLearnYou',
         })
         .end((error, response) => {
@@ -197,6 +199,7 @@ describe('API Routes', () => {
           email: 'abcdef@hijklmnop',
           phone: '321-765-9877',
           phoneType: 'wireless',
+          phoneLocation: 'Residential/Personal',
           address: '123 Main',
           city: 'Denver',
           state: 'CO',
@@ -220,6 +223,7 @@ describe('API Routes', () => {
           email: 'abcdef@hijklmnop',
           phone: '049-765-9877',
           phoneType: 'wireless',
+          phoneLocation: 'Residential/Personal',
           address: '123 Main',
           city: 'Denver',
           state: 'CO',
@@ -258,7 +262,7 @@ describe('API Routes', () => {
         });
     });
 
-    it("should return an error with status 422 if patching a column that doesn't exist", (done) => {
+    it('should return an error with status 422 if patching a column that doesn\'t exist', (done) => {
       chai
         .request(server)
         .patch('/api/v1/users/1')
@@ -433,18 +437,26 @@ describe('API Routes', () => {
         .set('token', token)
         .send({
           user_id: 1,
-          isSoliciting: true,
-          subject: 'Robocall',
+          isSoliciting: 'Yes',
+          subject: 'Nuisance caller',
           description: 'A woman wants to eliminate my credit card debt',
           callerIdNumber: '303-123-1234',
           callerIdName: 'unknown',
           date: '04/04/2018',
           time: '5:00 PM',
-          type: 'Prerecorded Voice',
-          altPhone: '303-123-1234',
-          permissionGranted: false,
-          businessName: null,
-          agentName: null,
+          typeOfSolicit: 'Credit card debt',
+          doneBusinessWith: 'No',
+          inquiredWith: 'No',
+          householdRelation: 'Uncertain',
+          permissionToCall: 'No',
+          writtenPermission: 'No',
+          dateOfPermission: '',
+          typeOfCall: 'Prerecorded Voice',
+          receivedCallerId: 'Yes',
+          receivedBusinessName: 'No',
+          nameAtBeginning: 'No',
+          providedAdvertiserName: '',
+          providedAdvertiserNumber: '',
         })
         .end((error, response) => {
           response.should.have.status(201);
@@ -461,17 +473,25 @@ describe('API Routes', () => {
         .set('token', token)
         .send({
           user_id: 1,
-          isSoliciting: true,
-          subject: 'Robocall',
+          isSoliciting: 'Yes',
+          subject: 'Nuisance caller',
           description: 'A woman wants to eliminate my credit card debt',
           callerIdName: 'unknown',
           date: '04/04/2018',
           time: '5:00 PM',
-          type: 'Prerecorded Voice',
-          altPhone: '303-123-1234',
-          permissionGranted: false,
-          businessName: null,
-          agentName: null,
+          typeOfSolicit: 'Credit card debt',
+          doneBusinessWith: 'No',
+          inquiredWith: 'No',
+          householdRelation: 'Uncertain',
+          permissionToCall: 'No',
+          writtenPermission: 'No',
+          dateOfPermission: '',
+          typeOfCall: 'Prerecorded Voice',
+          receivedCallerId: 'Yes',
+          receivedBusinessName: 'No',
+          nameAtBeginning: 'No',
+          providedAdvertiserName: '',
+          providedAdvertiserNumber: '',
         })
         .end((error, response) => {
           response.should.have.status(422);
@@ -506,7 +526,7 @@ describe('API Routes', () => {
         });
     });
 
-    it("should return an error with status 422 if patching a column that doesn't exist", (done) => {
+    it('should return an error with status 422 if patching a column that doesn\'t exist', (done) => {
       chai
         .request(server)
         .patch('/api/v1/complaints/1')
