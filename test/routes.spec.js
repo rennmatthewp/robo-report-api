@@ -10,7 +10,7 @@ const server = require('../server');
 const should = chai.should();
 chai.use(chaiHttp);
 
-describe('Client Routes', () => {});
+describe('Client Routes', () => { });
 
 describe('API Routes', () => {
   let token;
@@ -18,15 +18,19 @@ describe('API Routes', () => {
     database.migrate.rollback().then(() => {
       database.migrate.rollback().then(() => {
         database.migrate.rollback().then(() => {
-          database.migrate.latest().then(() =>
-            database.seed.run().then(() => {
-              token = jwt.sign({
-                email: 'robbie@turing.io',
-                appName: 'roboReport',
-                admin: true,
-              }, process.env.secret_key);
-              done();
-            }));
+          database.migrate.rollback().then(() => {
+            database.migrate.rollback().then(() => {
+              database.migrate.latest().then(() =>
+                database.seed.run().then(() => {
+                  token = jwt.sign({
+                    email: process.env.test_email,
+                    appName: 'robo-report-client',
+                    admin: true,
+                  }, process.env.secret_key);
+                  done();
+                }));
+            });
+          });
         });
       });
     });
@@ -37,8 +41,8 @@ describe('API Routes', () => {
       chai.request(server)
         .post('/api/v1/authenticate')
         .send({
-          email: 'robbie@turing.io',
-          appName: 'gonLearnYou',
+          email: process.env.test_email,
+          appName: 'robo-report-client',
         })
         .end((error, response) => {
           response.should.have.status(201);
@@ -53,7 +57,7 @@ describe('API Routes', () => {
       chai.request(server)
         .post('/api/v1/authenticate')
         .send({
-          email: 'robbie@turing.io',
+          email: process.env.test_email,
         })
         .end((error, response) => {
           response.should.have.status(402);
@@ -69,7 +73,7 @@ describe('API Routes', () => {
         .post('/api/v1/authenticate')
         .send({
           email: 'robbie@nope.org',
-          appName: 'Not',
+          appName: 'robo-report-client',
         })
         .end((error, response) => {
           response.should.have.status(201);
@@ -197,6 +201,7 @@ describe('API Routes', () => {
           email: 'abcdef@hijklmnop',
           phone: '321-765-9877',
           phoneType: 'wireless',
+          phoneLocation: 'Residential/Personal',
           address: '123 Main',
           city: 'Denver',
           state: 'CO',
@@ -220,6 +225,7 @@ describe('API Routes', () => {
           email: 'abcdef@hijklmnop',
           phone: '049-765-9877',
           phoneType: 'wireless',
+          phoneLocation: 'Residential/Personal',
           address: '123 Main',
           city: 'Denver',
           state: 'CO',
@@ -230,7 +236,7 @@ describe('API Routes', () => {
           response.should.be.json;
           response.body.should.have.property(
             'error',
-            'Expected format: {firstName: <String>, lastName: <String>, email: <String>, phone: <String>, phoneType: <String>, address: <String>, city: <String>, state: <String>, zipcode: <String>}. Missing required property firstName.',
+            'Expected format: { email: <String>, phone: <String>, phoneType: <String>, phoneLocation: <String>, firstName: <String>, lastName: <String>, address: <String>, city: <String>, state: <String>, zipcode: <String> }. Missing required property firstName.',
           );
           done();
         });
@@ -258,7 +264,7 @@ describe('API Routes', () => {
         });
     });
 
-    it("should return an error with status 422 if patching a column that doesn't exist", (done) => {
+    it('should return an error with status 422 if patching a column that doesn\'t exist', (done) => {
       chai
         .request(server)
         .patch('/api/v1/users/1')
@@ -270,7 +276,7 @@ describe('API Routes', () => {
           response.should.have.status(422);
           response.body.should.have.property(
             'error',
-            'Cannot update user, invalid property provided. Valid properties include: {firstName: <String>, lastName: <String>, email: <String>, phone: <String>, phoneType: <String>, address: <String>, city: <String>, state: <String>, zipcode: <String>}',
+            'Cannot update user, invalid property provided. Valid properties include: { email: <String>, phone: <String>, phoneType: <String>, phoneLocation: <String>, firstName: <String>, lastName: <String>, address: <String>, city: <String>, state: <String>, zipcode: <String> }.',
           );
           done();
         });
@@ -343,24 +349,29 @@ describe('API Routes', () => {
           response.should.have.status(200);
           response.should.be.json;
           response.body.should.be.an('array');
-          response.body.length.should.equal(32);
+          response.body.length.should.equal(3);
           response.body[0].should.have.property('id', 1);
           response.body[0].should.have.property('user_id', 1);
-          response.body[0].should.have.property('isSoliciting', true);
-          response.body[0].should.have.property(
-            'description',
-            'A woman wants to eliminate my credit card debt',
-          );
-          response.body[0].should.have.property('subject', 'Robocall');
+          response.body[0].should.have.property('isSoliciting', 'Yes');
+          response.body[0].should.have.property('subject', 'Nuisance caller');
+          response.body[0].should.have.property('description', 'A woman wants to eliminate my credit card debt');
           response.body[0].should.have.property('callerIdNumber', '303-123-1234');
           response.body[0].should.have.property('callerIdName', 'unknown');
           response.body[0].should.have.property('date', '04/04/2018');
           response.body[0].should.have.property('time', '5:00 PM');
-          response.body[0].should.have.property('type', 'Prerecorded Voice');
-          response.body[0].should.have.property('altPhone', '303-123-1234');
-          response.body[0].should.have.property('permissionGranted', false);
-          response.body[0].should.have.property('businessName', null);
-          response.body[0].should.have.property('agentName', null);
+          response.body[0].should.have.property('typeOfSolicit', 'Credit card debt');
+          response.body[0].should.have.property('doneBusinessWith', 'No');
+          response.body[0].should.have.property('inquiredWith', 'No');
+          response.body[0].should.have.property('householdRelation', 'Uncertain');
+          response.body[0].should.have.property('permissionToCall', 'No');
+          response.body[0].should.have.property('writtenPermission', 'No');
+          response.body[0].should.have.property('dateOfPermission', '');
+          response.body[0].should.have.property('typeOfCall', 'Prerecorded Voice');
+          response.body[0].should.have.property('receivedCallerId', 'Yes');
+          response.body[0].should.have.property('receivedBusinessName', 'No');
+          response.body[0].should.have.property('nameAtBeginning', 'No');
+          response.body[0].should.have.property('providedAdvertiserName', '');
+          response.body[0].should.have.property('providedAdvertiserNumber', '');
           done();
         });
     });
@@ -378,21 +389,26 @@ describe('API Routes', () => {
           response.body.should.be.an('object');
           response.body.should.have.property('id', 1);
           response.body.should.have.property('user_id', 1);
-          response.body.should.have.property('isSoliciting', true);
-          response.body.should.have.property(
-            'description',
-            'A woman wants to eliminate my credit card debt',
-          );
-          response.body.should.have.property('subject', 'Robocall');
+          response.body.should.have.property('isSoliciting', 'Yes');
+          response.body.should.have.property('subject', 'Nuisance caller');
+          response.body.should.have.property('description', 'A woman wants to eliminate my credit card debt');
           response.body.should.have.property('callerIdNumber', '303-123-1234');
           response.body.should.have.property('callerIdName', 'unknown');
           response.body.should.have.property('date', '04/04/2018');
           response.body.should.have.property('time', '5:00 PM');
-          response.body.should.have.property('type', 'Prerecorded Voice');
-          response.body.should.have.property('altPhone', '303-123-1234');
-          response.body.should.have.property('permissionGranted', false);
-          response.body.should.have.property('businessName', null);
-          response.body.should.have.property('agentName', null);
+          response.body.should.have.property('typeOfSolicit', 'Credit card debt');
+          response.body.should.have.property('doneBusinessWith', 'No');
+          response.body.should.have.property('inquiredWith', 'No');
+          response.body.should.have.property('householdRelation', 'Uncertain');
+          response.body.should.have.property('permissionToCall', 'No');
+          response.body.should.have.property('writtenPermission', 'No');
+          response.body.should.have.property('dateOfPermission', '');
+          response.body.should.have.property('typeOfCall', 'Prerecorded Voice');
+          response.body.should.have.property('receivedCallerId', 'Yes');
+          response.body.should.have.property('receivedBusinessName', 'No');
+          response.body.should.have.property('nameAtBeginning', 'No');
+          response.body.should.have.property('providedAdvertiserName', '');
+          response.body.should.have.property('providedAdvertiserNumber', '');
           done();
         });
     });
@@ -406,7 +422,7 @@ describe('API Routes', () => {
           response.should.have.status(200);
           response.should.be.json;
           response.body.should.be.an('array');
-          response.body.length.should.equal(2);
+          response.body.length.should.equal(1);
           done();
         });
     });
@@ -433,18 +449,26 @@ describe('API Routes', () => {
         .set('token', token)
         .send({
           user_id: 1,
-          isSoliciting: true,
-          subject: 'Robocall',
+          isSoliciting: 'Yes',
+          subject: 'Nuisance caller',
           description: 'A woman wants to eliminate my credit card debt',
           callerIdNumber: '303-123-1234',
           callerIdName: 'unknown',
           date: '04/04/2018',
           time: '5:00 PM',
-          type: 'Prerecorded Voice',
-          altPhone: '303-123-1234',
-          permissionGranted: false,
-          businessName: null,
-          agentName: null,
+          typeOfSolicit: 'Credit card debt',
+          doneBusinessWith: 'No',
+          inquiredWith: 'No',
+          householdRelation: 'Uncertain',
+          permissionToCall: 'No',
+          writtenPermission: 'No',
+          dateOfPermission: '',
+          typeOfCall: 'Prerecorded Voice',
+          receivedCallerId: 'Yes',
+          receivedBusinessName: 'No',
+          nameAtBeginning: 'No',
+          providedAdvertiserName: '',
+          providedAdvertiserNumber: '',
         })
         .end((error, response) => {
           response.should.have.status(201);
@@ -461,24 +485,32 @@ describe('API Routes', () => {
         .set('token', token)
         .send({
           user_id: 1,
-          isSoliciting: true,
-          subject: 'Robocall',
+          isSoliciting: 'Yes',
+          subject: 'Nuisance caller',
           description: 'A woman wants to eliminate my credit card debt',
           callerIdName: 'unknown',
           date: '04/04/2018',
           time: '5:00 PM',
-          type: 'Prerecorded Voice',
-          altPhone: '303-123-1234',
-          permissionGranted: false,
-          businessName: null,
-          agentName: null,
+          typeOfSolicit: 'Credit card debt',
+          doneBusinessWith: 'No',
+          inquiredWith: 'No',
+          householdRelation: 'Uncertain',
+          permissionToCall: 'No',
+          writtenPermission: 'No',
+          dateOfPermission: '',
+          typeOfCall: 'Prerecorded Voice',
+          receivedCallerId: 'Yes',
+          receivedBusinessName: 'No',
+          nameAtBeginning: 'No',
+          providedAdvertiserName: '',
+          providedAdvertiserNumber: '',
         })
         .end((error, response) => {
           response.should.have.status(422);
           response.should.be.json;
           response.body.should.have.property(
             'error',
-            'Expected format: {user_id: <Integer>, isSoliciting: <String>, subject: <String>, description: <String>, callerIdNumber: <String>, callerIdName: <String>, date: <String>, time: <String>, type: <String>, altPhone: <String>, permissionGranted: <Boolean>, businessName: <String>, agentName: <String>}. Missing required property callerIdNumber.',
+            'Expected format: { user_id: <Integer>, subject: <String>, description: <String>, isSoliciting: <String>, typeOfSolicit: <String>, doneBusinessWith: <String>, inquiredWith: <String>, householdRelation: <String>, permissionToCall: <String>, writtenPermission: <String>, dateOfPermission: <String>, date: <String>, time: <String>, typeOfCall: <String>, receivedCallerId: <String>, callerIdNumber: <String>, callerIdName: <String>, receivedBusinessName: <String>, nameAtBeginning: <String>, providedAdvertiserName: <String>, providedAdvertiserNumber: <String> }. Missing required property callerIdNumber.',
           );
           done();
         });
@@ -492,7 +524,7 @@ describe('API Routes', () => {
         .patch('/api/v1/complaints/1')
         .set('token', token)
         .send({
-          isSoliciting: true,
+          isSoliciting: 'No',
         })
         .end((error, response) => {
           response.should.have.status(201);
@@ -506,7 +538,7 @@ describe('API Routes', () => {
         });
     });
 
-    it("should return an error with status 422 if patching a column that doesn't exist", (done) => {
+    it('should return an error with status 422 if patching a column that doesn\'t exist', (done) => {
       chai
         .request(server)
         .patch('/api/v1/complaints/1')
@@ -518,7 +550,7 @@ describe('API Routes', () => {
           response.should.have.status(422);
           response.body.should.have.property(
             'error',
-            'Cannot update complaint, invalid property provided. Valid properties include: {user_id: <Integer>, isSoliciting: <String>, subject: <String>, description: <String>, callerIdNumber: <String>, callerIdName: <String>, date: <String>, time: <String>, type: <String>, altPhone: <String>, permissionGranted: <Boolean>, businessName: <String>, agentName: <String>}',
+            'Cannot update complaint, invalid property provided. Valid properties include: { user_id: <Integer>, isSoliciting: <String>, subject: <String>, description: <String>, callerIdNumber: <String>, callerIdName: <String>, date: <String>, time: <String>, type: <String>, altPhone: <String>, permissionGranted: <Boolean>, businessName: <String>, agentName: <String> }.',
           );
           done();
         });
@@ -530,7 +562,7 @@ describe('API Routes', () => {
         .patch('/api/v1/complaints/500')
         .set('token', token)
         .send({
-          permissionGranted: false,
+          isSoliciting: 'No',
         })
         .end((error, response) => {
           response.should.have.status(422);
@@ -549,14 +581,14 @@ describe('API Routes', () => {
     it('should delete a complaint by its id', (done) => {
       chai
         .request(server)
-        .delete('/api/v1/complaints/32')
+        .delete('/api/v1/complaints/3')
         .set('token', token)
         .end((error, response) => {
           response.should.have.status(200);
           response.should.be.json;
           response.body.should.have.property(
             'message',
-            '1 row(s) deleted. Deleted complaint with id: 32.',
+            '1 row(s) deleted. Deleted complaint with id: 3.',
           );
           done();
         });
