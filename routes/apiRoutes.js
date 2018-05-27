@@ -42,24 +42,24 @@ const requiredComplaintParameters = [
   'user_id',
   'subject',
   'description',
-  'isSoliciting', // change to string
-  'typeOfSolicit', // add column
-  'doneBusinessWith', // add column
-  'inquiredWith', // add column
-  'householdRelation', // add column
-  'permissionToCall', // drop permissionGranted, add column
-  'writtenPermission', // add column
-  'dateOfPermission', // add column
+  'isSoliciting',
+  'typeOfSolicit',
+  'doneBusinessWith',
+  'inquiredWith',
+  'householdRelation',
+  'permissionToCall',
+  'writtenPermission',
+  'dateOfPermission',
   'date',
   'time',
-  'typeOfCall', // rename type column
-  'receivedCallerId', // add column
+  'typeOfCall',
+  'receivedCallerId',
   'callerIdNumber',
   'callerIdName',
-  'receivedBusinessName', // rename businessName
-  'nameAtBeginning', // add column
-  'providedAdvertiserName', // rename agentName
-  'providedAdvertiserNumber', // rename altPhone
+  'receivedBusinessName',
+  'nameAtBeginning',
+  'providedAdvertiserName',
+  'providedAdvertiserNumber',
 ];
 
 router.post('/authenticate', (request, response) => {
@@ -121,18 +121,7 @@ router.post('/users', checkAuth, (request, response) => {
   for (const parameter of requiredUserParameters) {
     if (!user[parameter]) {
       return response.status(422).json({
-        error: `Expected format: {
-          email: <String>,
-          phone: <String>,
-          phoneType: <String>,
-          phoneLocation: <String>,
-          firstName: <String>,
-          lastName: <String>,
-          address: <String>,
-          city: <String>,
-          state: <String>,
-          zipcode: <String> 
-        }. Missing required property ${parameter}.`,
+        error: `Expected format: { email: <String>, phone: <String>, phoneType: <String>, phoneLocation: <String>, firstName: <String>, lastName: <String>, address: <String>, city: <String>, state: <String>, zipcode: <String> }. Missing required property ${parameter}.`,
       });
     }
   }
@@ -154,20 +143,7 @@ router.patch('/users/:id', checkAuth, (request, response) => {
   });
   if (!correctFormat) {
     return response.status(422).json({
-      error:
-        `Cannot update user, invalid property provided. Valid properties include: 
-        {
-          email: <String>,
-          phone: <String>,
-          phoneType: <String>,
-          phoneLocation: <String>,
-          firstName: <String>,
-          lastName: <String>,
-          address: <String>,
-          city: <String>,
-          state: <String>,
-          zipcode: <String> 
-        }`,
+      error: 'Cannot update user, invalid property provided. Valid properties include: { email: <String>, phone: <String>, phoneType: <String>, phoneLocation: <String>, firstName: <String>, lastName: <String>, address: <String>, city: <String>, state: <String>, zipcode: <String> }.',
     });
   }
 
@@ -261,30 +237,7 @@ router.post('/complaints', checkAuth, (request, response) => {
   for (const parameter of requiredComplaintParameters) {
     if (complaint[parameter] === undefined) {
       return response.status(422).json({
-        error: `Expected format: {
-          user_id: <Integer>, 
-          subject: <String>,
-          description: <String>,
-          isSoliciting: <String>,
-          typeOfSolicit: <String>,
-          doneBusinessWith: <String>,
-          inquiredWith: <String>,
-          householdRelation: <String>,
-          permissionToCall: <String>,
-          writtenPermission: <String>,
-          dateOfPermission: <String>,
-          date: <String>,
-          time: <String>,
-          typeOfCall: <String>,
-          receivedCallerId: <String>,
-          callerIdNumber: <String>,
-          callerIdName: <String>,
-          receivedBusinessName: <String>,
-          nameAtBeginning: <String>,
-          providedAdvertiserName: <String>,
-          providedAdvertiserNumber: <String>
-        }.
-        Missing required property ${parameter}.`,
+        error: `Expected format: { user_id: <Integer>, subject: <String>, description: <String>, isSoliciting: <String>, typeOfSolicit: <String>, doneBusinessWith: <String>, inquiredWith: <String>, householdRelation: <String>, permissionToCall: <String>, writtenPermission: <String>, dateOfPermission: <String>, date: <String>, time: <String>, typeOfCall: <String>, receivedCallerId: <String>, callerIdNumber: <String>, callerIdName: <String>, receivedBusinessName: <String>, nameAtBeginning: <String>, providedAdvertiserName: <String>, providedAdvertiserNumber: <String> }. Missing required property ${parameter}.`,
       });
     }
   }
@@ -306,23 +259,7 @@ router.patch('/complaints/:id', checkAuth, (request, response) => {
   });
   if (!correctFormat) {
     return response.status(422).json({
-      error:
-        `Cannot update complaint, invalid property provided. Valid properties include: 
-        {
-          user_id: <Integer>, 
-          isSoliciting: <String>, 
-          subject: <String>, 
-          description: <String>, 
-          callerIdNumber: <String>, 
-          callerIdName: <String>, 
-          date: <String>, 
-          time: <String>, 
-          type: <String>, 
-          altPhone: <String>, 
-          permissionGranted: <Boolean>, 
-          businessName: <String>, 
-          agentName: <String>
-        }`,
+      error: 'Cannot update complaint, invalid property provided. Valid properties include: { user_id: <Integer>, isSoliciting: <String>, subject: <String>, description: <String>, callerIdNumber: <String>, callerIdName: <String>, date: <String>, time: <String>, type: <String>, altPhone: <String>, permissionGranted: <Boolean>, businessName: <String>, agentName: <String> }.',
     });
   }
 
