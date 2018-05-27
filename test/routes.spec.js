@@ -81,9 +81,9 @@ describe('API Routes', () => {
           response.should.be.an('object');
           response.body.should.have.property('token');
           // eslint-disable-next-line
-          // jwt.verify(response.body.token, process.env.secret_key, (error, decoded) => {
-          //   decoded.admin.should.equal(false);
-          // });
+          jwt.verify(response.body.token, process.env.secret_key, (error, decoded) => {
+            decoded.admin.should.equal(false);
+          });
           done();
         });
     });
