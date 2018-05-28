@@ -20,15 +20,17 @@ describe('API Routes', () => {
         database.migrate.rollback().then(() => {
           database.migrate.rollback().then(() => {
             database.migrate.rollback().then(() => {
-              database.migrate.latest().then(() =>
-                database.seed.run().then(() => {
-                  token = jwt.sign({
-                    email: process.env.test_email,
-                    appName: 'robo-report-client',
-                    admin: true,
-                  }, process.env.secret_key);
-                  done();
-                }));
+              database.migrate.rollback().then(() => {
+                database.migrate.latest().then(() =>
+                  database.seed.run().then(() => {
+                    token = jwt.sign({
+                      email: process.env.test_email,
+                      appName: 'robo-report-client',
+                      admin: true,
+                    }, process.env.secret_key);
+                    done();
+                  }));
+              });
             });
           });
         });
