@@ -215,14 +215,7 @@ router.get('/complaints', checkAuth, (request, response) => {
   if (user_id) {
     return database('complaints')
       .where('user_id', user_id)
-      .then((complaints) => {
-        if (!complaints.length) {
-          return response
-            .status(404)
-            .json({ error: `No complaints found for user with id: ${user_id}.` });
-        }
-        return response.status(200).json(complaints);
-      })
+      .then(complaints => response.status(200).json(complaints))
       .catch(error => response.status(500).json({ error }));
   }
 
