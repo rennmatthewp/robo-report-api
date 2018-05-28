@@ -85,7 +85,6 @@ router.get('/users', checkAuth, (request, response) => {
   if (email) {
     database('users')
       .where('email', email)
-      .select()
       .then((user) => {
         if (!user.length) {
           return response.status(404).json({ error: `Could not find user with email: ${email}.` });
@@ -95,7 +94,6 @@ router.get('/users', checkAuth, (request, response) => {
       .catch(error => response.status(500).json({ error }));
   } else {
     database('users')
-      .select()
       .then(users => response.status(200).json(users))
       .catch(error => response.status(500).json({ error }));
   }
@@ -150,7 +148,6 @@ router.patch('/users/:id', checkAuth, (request, response) => {
 
   return database('users')
     .where('id', id)
-    .select()
     .update(revision)
     .then((updateCount) => {
       if (updateCount === 0) {
@@ -201,12 +198,10 @@ router.get('/complaints', checkAuth, (request, response) => {
   if (city) {
     return database('users')
       .where('city', city)
-      .select()
       .then((users) => {
         const ids = users.map(user => user.id);
         return database('complaints')
           .whereIn('user_id', ids)
-          .select()
           .then(complaints => response.status(200).json(complaints))
           .catch(error => response.status(500).json({ error }));
       });
@@ -220,7 +215,6 @@ router.get('/complaints', checkAuth, (request, response) => {
   }
 
   return database('complaints')
-    .select()
     .then(complaints => response.status(200).json(complaints))
     .catch(error => response.status(500).json({ error }));
 });
@@ -274,7 +268,6 @@ router.patch('/complaints/:id', checkAuth, (request, response) => {
 
   return database('complaints')
     .where('id', id)
-    .select()
     .update(revision)
     .then((updateCount) => {
       if (updateCount === 0) {
