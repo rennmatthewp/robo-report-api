@@ -375,6 +375,56 @@ describe('API Routes', () => {
           done();
         });
     });
+
+    it('should return complaints matching a city query', (done) => {
+      chai
+        .request(server)
+        .get('/api/v1/complaints?city=Denver')
+        .set('token', token)
+        .end((error, response) => {
+          response.should.have.status(200);
+          response.should.be.json;
+          response.body.should.be.an('array');
+          response.body.length.should.equal(1);
+          done();
+        });
+    });
+
+    it('should return an array of complaints for a requested user', (done) => {
+      chai
+        .request(server)
+        .get('/api/v1/complaints?user_id=1')
+        .set('token', token)
+        .end((error, response) => {
+          response.should.have.status(200);
+          response.should.be.json;
+          response.body.should.be.an('array');
+          response.body.length.should.equal(1);
+          response.body[0].should.have.property('id', 1);
+          response.body[0].should.have.property('user_id', 1);
+          response.body[0].should.have.property('isSoliciting', 'Yes');
+          response.body[0].should.have.property('subject', 'Nuisance caller');
+          response.body[0].should.have.property('description', 'A woman wants to eliminate my credit card debt');
+          response.body[0].should.have.property('callerIdNumber', '303-123-1234');
+          response.body[0].should.have.property('callerIdName', 'unknown');
+          response.body[0].should.have.property('date', '04/04/2018');
+          response.body[0].should.have.property('time', '5:00 PM');
+          response.body[0].should.have.property('typeOfSolicit', 'Credit card debt');
+          response.body[0].should.have.property('doneBusinessWith', 'No');
+          response.body[0].should.have.property('inquiredWith', 'No');
+          response.body[0].should.have.property('householdRelation', 'Uncertain');
+          response.body[0].should.have.property('permissionToCall', 'No');
+          response.body[0].should.have.property('writtenPermission', 'No');
+          response.body[0].should.have.property('dateOfPermission', '');
+          response.body[0].should.have.property('typeOfCall', 'Prerecorded Voice');
+          response.body[0].should.have.property('receivedCallerId', 'Yes');
+          response.body[0].should.have.property('receivedBusinessName', 'No');
+          response.body[0].should.have.property('nameAtBeginning', 'No');
+          response.body[0].should.have.property('providedAdvertiserName', '');
+          response.body[0].should.have.property('providedAdvertiserNumber', '');
+          done();
+        });
+    });
   });
 
   describe('GET /api/v1/complaints/:id', () => {
@@ -409,20 +459,6 @@ describe('API Routes', () => {
           response.body.should.have.property('nameAtBeginning', 'No');
           response.body.should.have.property('providedAdvertiserName', '');
           response.body.should.have.property('providedAdvertiserNumber', '');
-          done();
-        });
-    });
-
-    it('should return complaints matching a city query', (done) => {
-      chai
-        .request(server)
-        .get('/api/v1/complaints?city=Denver')
-        .set('token', token)
-        .end((error, response) => {
-          response.should.have.status(200);
-          response.should.be.json;
-          response.body.should.be.an('array');
-          response.body.length.should.equal(1);
           done();
         });
     });

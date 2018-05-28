@@ -1,4 +1,5 @@
 /* eslint-disable no-restricted-syntax */
+/* eslint-disable camelcase */
 
 const express = require('express');
 const jwt = require('jsonwebtoken');
@@ -195,25 +196,40 @@ router.delete('/users/:id', checkAuth, (request, response) => {
 });
 
 router.get('/complaints', checkAuth, (request, response) => {
-  const { city } = request.query;
+  const { city, user_id } = request.query;
+
   if (city) {
-    database('users')
+    return database('users')
       .where('city', city)
       .select()
       .then((users) => {
         const ids = users.map(user => user.id);
-        database('complaints')
+        return database('complaints')
           .whereIn('user_id', ids)
           .select()
           .then(complaints => response.status(200).json(complaints))
           .catch(error => response.status(500).json({ error }));
       });
-  } else {
-    database('complaints')
-      .select()
-      .then(complaints => response.status(200).json(complaints))
+  }
+
+  if (user_id) {
+    return database('complaints')
+      .where('user_id', user_id)
+      .then((complaints) => {
+        if (!complaints.length) {
+          return response
+            .status(404)
+            .json({ error: `No complaints found for user with id: ${user_id}.` });
+        }
+        return response.status(200).json(complaints);
+      })
       .catch(error => response.status(500).json({ error }));
   }
+
+  return database('complaints')
+    .select()
+    .then(complaints => response.status(200).json(complaints))
+    .catch(error => response.status(500).json({ error }));
 });
 
 router.get('/complaints/:id', checkAuth, (request, response) => {
