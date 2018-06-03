@@ -62,6 +62,7 @@ const requiredComplaintParameters = [
   'providedAdvertiserName',
   'providedAdvertiserNumber',
   'isSubmitted',
+  'addtlInfo',
 ];
 
 router.post('/authenticate', (request, response) => {
@@ -241,7 +242,7 @@ router.post('/complaints', checkAuth, (request, response) => {
   for (const parameter of requiredComplaintParameters) {
     if (complaint[parameter] === undefined) {
       return response.status(422).json({
-        error: `Expected format: { user_id: <Integer>, subject: <String>, description: <String>, isSoliciting: <String>, typeOfSolicit: <String>, doneBusinessWith: <String>, inquiredWith: <String>, householdRelation: <String>, permissionToCall: <String>, writtenPermission: <String>, dateOfPermission: <String>, date: <String>, time: <String>, typeOfCall: <String>, receivedCallerId: <String>, callerIdNumber: <String>, callerIdName: <String>, receivedBusinessName: <String>, nameAtBeginning: <String>, providedAdvertiserName: <String>, providedAdvertiserNumber: <String>, isSubmitted: <Boolean> }. Missing required property ${parameter}.`,
+        error: `Expected format: { user_id: <Integer>, subject: <String>, description: <String>, isSoliciting: <String>, typeOfSolicit: <String>, doneBusinessWith: <String>, inquiredWith: <String>, householdRelation: <String>, permissionToCall: <String>, writtenPermission: <String>, dateOfPermission: <String>, date: <String>, time: <String>, typeOfCall: <String>, receivedCallerId: <String>, callerIdNumber: <String>, callerIdName: <String>, receivedBusinessName: <String>, nameAtBeginning: <String>, providedAdvertiserName: <String>, providedAdvertiserNumber: <String>, isSubmitted: <Boolean>, addtlInfo: <String> }. Missing required property ${parameter}.`,
       });
     }
   }
@@ -263,7 +264,7 @@ router.patch('/complaints/:id', checkAuth, (request, response) => {
   });
   if (!correctFormat) {
     return response.status(422).json({
-      error: 'Cannot update complaint, invalid property provided. Valid properties include: { subject: <String>, description: <String>, isSoliciting: <String>, typeOfSolicit: <String>, doneBusinessWith: <String>, inquiredWith: <String>, householdRelation: <String>, permissionToCall: <String>, writtenPermission: <String>, dateOfPermission: <String>, date: <String>, time: <String>, typeOfCall: <String>, receivedCallerId: <String>, callerIdNumber: <String>, callerIdName: <String>, receivedBusinessName: <String>, nameAtBeginning: <String>, providedAdvertiserName: <String>, providedAdvertiserNumber: <String>, isSubmitted: <Boolean> }.',
+      error: 'Cannot update complaint, invalid property provided. Valid properties include: { subject: <String>, description: <String>, isSoliciting: <String>, typeOfSolicit: <String>, doneBusinessWith: <String>, inquiredWith: <String>, householdRelation: <String>, permissionToCall: <String>, writtenPermission: <String>, dateOfPermission: <String>, date: <String>, time: <String>, typeOfCall: <String>, receivedCallerId: <String>, callerIdNumber: <String>, callerIdName: <String>, receivedBusinessName: <String>, nameAtBeginning: <String>, providedAdvertiserName: <String>, providedAdvertiserNumber: <String>, isSubmitted: <Boolean>, addtlInfo: <String> }.',
     });
   }
 
