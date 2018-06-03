@@ -19,7 +19,8 @@
     "receivedBusinessName": "No",
     "nameAtBeginning": "No",
     "providedAdvertiserName": "",
-    "providedAdvertiserNumber": ""
+    "providedAdvertiserNumber": "",
+    "isSubmitted": false
   },
   {
     "isSoliciting": "Yes",
@@ -41,7 +42,8 @@
     "receivedBusinessName": "No",
     "nameAtBeginning": "No",
     "providedAdvertiserName": "",
-    "providedAdvertiserNumber": ""
+    "providedAdvertiserNumber": "",
+    "isSubmitted": false
   },
   {
     "isSoliciting": "Yes",
@@ -63,6 +65,7 @@
     "receivedBusinessName": "No",
     "nameAtBeginning": "No",
     "providedAdvertiserName": "",
-    "providedAdvertiserNumber": ""
+    "providedAdvertiserNumber": "",
+    "isSubmitted": false
   }
 ]
