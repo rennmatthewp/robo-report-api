@@ -21,15 +21,17 @@ describe('API Routes', () => {
           database.migrate.rollback().then(() => {
             database.migrate.rollback().then(() => {
               database.migrate.rollback().then(() => {
-                database.migrate.latest().then(() =>
-                  database.seed.run().then(() => {
-                    token = jwt.sign({
-                      email: process.env.test_email,
-                      appName: 'robo-report-client',
-                      admin: true,
-                    }, process.env.secret_key);
-                    done();
-                  }));
+                database.migrate.rollback().then(() => {
+                  database.migrate.latest().then(() =>
+                    database.seed.run().then(() => {
+                      token = jwt.sign({
+                        email: process.env.test_email,
+                        appName: 'robo-report-client',
+                        admin: true,
+                      }, process.env.secret_key);
+                      done();
+                    }));
+                });
               });
             });
           });
@@ -374,6 +376,7 @@ describe('API Routes', () => {
           response.body[0].should.have.property('nameAtBeginning', 'No');
           response.body[0].should.have.property('providedAdvertiserName', '');
           response.body[0].should.have.property('providedAdvertiserNumber', '');
+          response.body[0].should.have.property('isSubmitted', false);
           done();
         });
     });
@@ -424,6 +427,7 @@ describe('API Routes', () => {
           response.body[0].should.have.property('nameAtBeginning', 'No');
           response.body[0].should.have.property('providedAdvertiserName', '');
           response.body[0].should.have.property('providedAdvertiserNumber', '');
+          response.body[0].should.have.property('isSubmitted', false);
           done();
         });
     });
@@ -461,6 +465,7 @@ describe('API Routes', () => {
           response.body.should.have.property('nameAtBeginning', 'No');
           response.body.should.have.property('providedAdvertiserName', '');
           response.body.should.have.property('providedAdvertiserNumber', '');
+          response.body.should.have.property('isSubmitted', false);
           done();
         });
     });
@@ -507,6 +512,7 @@ describe('API Routes', () => {
           nameAtBeginning: 'No',
           providedAdvertiserName: '',
           providedAdvertiserNumber: '',
+          isSubmitted: false,
         })
         .end((error, response) => {
           response.should.have.status(201);
@@ -542,13 +548,14 @@ describe('API Routes', () => {
           nameAtBeginning: 'No',
           providedAdvertiserName: '',
           providedAdvertiserNumber: '',
+          isSubmitted: false,
         })
         .end((error, response) => {
           response.should.have.status(422);
           response.should.be.json;
           response.body.should.have.property(
             'error',
-            'Expected format: { user_id: <Integer>, subject: <String>, description: <String>, isSoliciting: <String>, typeOfSolicit: <String>, doneBusinessWith: <String>, inquiredWith: <String>, householdRelation: <String>, permissionToCall: <String>, writtenPermission: <String>, dateOfPermission: <String>, date: <String>, time: <String>, typeOfCall: <String>, receivedCallerId: <String>, callerIdNumber: <String>, callerIdName: <String>, receivedBusinessName: <String>, nameAtBeginning: <String>, providedAdvertiserName: <String>, providedAdvertiserNumber: <String> }. Missing required property callerIdNumber.',
+            'Expected format: { user_id: <Integer>, subject: <String>, description: <String>, isSoliciting: <String>, typeOfSolicit: <String>, doneBusinessWith: <String>, inquiredWith: <String>, householdRelation: <String>, permissionToCall: <String>, writtenPermission: <String>, dateOfPermission: <String>, date: <String>, time: <String>, typeOfCall: <String>, receivedCallerId: <String>, callerIdNumber: <String>, callerIdName: <String>, receivedBusinessName: <String>, nameAtBeginning: <String>, providedAdvertiserName: <String>, providedAdvertiserNumber: <String>, isSubmitted: <Boolean> }. Missing required property callerIdNumber.',
           );
           done();
         });
@@ -588,7 +595,7 @@ describe('API Routes', () => {
           response.should.have.status(422);
           response.body.should.have.property(
             'error',
-            'Cannot update complaint, invalid property provided. Valid properties include: { user_id: <Integer>, isSoliciting: <String>, subject: <String>, description: <String>, callerIdNumber: <String>, callerIdName: <String>, date: <String>, time: <String>, type: <String>, altPhone: <String>, permissionGranted: <Boolean>, businessName: <String>, agentName: <String> }.',
+            'Cannot update complaint, invalid property provided. Valid properties include: { subject: <String>, description: <String>, isSoliciting: <String>, typeOfSolicit: <String>, doneBusinessWith: <String>, inquiredWith: <String>, householdRelation: <String>, permissionToCall: <String>, writtenPermission: <String>, dateOfPermission: <String>, date: <String>, time: <String>, typeOfCall: <String>, receivedCallerId: <String>, callerIdNumber: <String>, callerIdName: <String>, receivedBusinessName: <String>, nameAtBeginning: <String>, providedAdvertiserName: <String>, providedAdvertiserNumber: <String>, isSubmitted: <Boolean> }.',
           );
           done();
         });
