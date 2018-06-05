@@ -135,31 +135,28 @@ router.post('/users', checkAuth, (request, response) => {
 
 router.patch('/users/:id', checkAuth, (request, response) => {
   const { id } = request.params;
-  const revision = request.body;
-  let correctFormat = true;
-  Object.keys(revision).forEach((key) => {
-    if (!requiredUserParameters.includes(key)) {
-      correctFormat = false;
+  const user = request.body;
+
+  for (const parameter of requiredUserParameters) {
+    if (!user[parameter]) {
+      return response.status(422).json({
+        error: `Cannot update user, missing required property: ${parameter}.`,
+      });
     }
-  });
-  if (!correctFormat) {
-    return response.status(422).json({
-      error: 'Cannot update user, invalid property provided. Valid properties include: { email: <String>, phone: <String>, phoneType: <String>, phoneLocation: <String>, firstName: <String>, lastName: <String>, address: <String>, city: <String>, state: <String>, zipcode: <String> }.',
-    });
   }
 
   return database('users')
     .where('id', id)
-    .update(revision)
+    .update(user)
     .then((updateCount) => {
       if (updateCount === 0) {
         return response.status(422).json({
           error: `${updateCount} column(s) updated. Unable to find user with id: ${id}`,
         });
       }
-      const updates = Object.keys(revision).join(', ');
       return response.status(201).json({
-        message: `${updateCount} column(s) updated: [ ${updates} ]. User id: ${id}.`,
+        message: `${updateCount} user updated.`,
+        userId: id,
       });
     })
     .catch(error => response.status(500).json({ error }));

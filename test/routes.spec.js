@@ -202,7 +202,7 @@ describe('API Routes', () => {
         .post('/api/v1/users')
         .set('token', token)
         .send({
-          firstName: 'Jon',
+          firstName: 'Dudde',
           lastName: 'Sweet',
           email: 'abcdef@hijklmnop',
           phone: '321-765-9877',
@@ -253,10 +253,19 @@ describe('API Routes', () => {
     it('should update a user selected by id', (done) => {
       chai
         .request(server)
-        .patch('/api/v1/users/1')
+        .patch('/api/v1/users/4')
         .set('token', token)
         .send({
-          address: 'bowling alley',
+          firstName: 'Dude',
+          lastName: 'Sweet',
+          email: 'abcdef@hijklmnop',
+          phone: '049-765-9877',
+          phoneType: 'wireless',
+          phoneLocation: 'Residential/Personal',
+          address: '123 Main',
+          city: 'Denver',
+          state: 'CO',
+          zipcode: '90210',
         })
         .end((error, response) => {
           response.should.have.status(201);
@@ -264,25 +273,37 @@ describe('API Routes', () => {
           response.body.should.be.an('object');
           response.body.should.have.property(
             'message',
-            '1 column(s) updated: [ address ]. User id: 1.',
+            '1 user updated.',
+          );
+          response.body.should.have.property(
+            'userId',
+            '4',
           );
           done();
         });
     });
 
-    it('should return an error with status 422 if patching a column that doesn\'t exist', (done) => {
+    it('should return an error with status 422 if missing a required parameter', (done) => {
       chai
         .request(server)
         .patch('/api/v1/users/1')
         .set('token', token)
         .send({
-          bowling: true,
+          lastName: 'Sweet',
+          email: 'abcdef@hijklmnop',
+          phone: '049-765-9877',
+          phoneType: 'wireless',
+          phoneLocation: 'Residential/Personal',
+          address: '123 Main',
+          city: 'Denver',
+          state: 'CO',
+          zipcode: '90210',
         })
         .end((error, response) => {
           response.should.have.status(422);
           response.body.should.have.property(
             'error',
-            'Cannot update user, invalid property provided. Valid properties include: { email: <String>, phone: <String>, phoneType: <String>, phoneLocation: <String>, firstName: <String>, lastName: <String>, address: <String>, city: <String>, state: <String>, zipcode: <String> }.',
+            'Cannot update user, missing required property: firstName.',
           );
           done();
         });
@@ -294,7 +315,16 @@ describe('API Routes', () => {
         .patch('/api/v1/users/500')
         .set('token', token)
         .send({
-          address: 'walters',
+          firstName: 'Dude',
+          lastName: 'Sweet',
+          email: 'abcdef@hijklmnop',
+          phone: '049-765-9877',
+          phoneType: 'wireless',
+          phoneLocation: 'Residential/Personal',
+          address: '123 Main',
+          city: 'Denver',
+          state: 'CO',
+          zipcode: '90210',
         })
         .end((error, response) => {
           response.should.have.status(422);
