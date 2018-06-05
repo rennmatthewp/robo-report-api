@@ -17,6 +17,10 @@ server.use((request, response, next) => {
     'Access-Control-Allow-Headers',
     'Content-Type,token',
   );
+  response.header(
+    'Access-Control-Allow-Methods',
+    'GET,POST,PATCH,DELETE',
+  );
   next();
 });
 server.use(bodyParser.json());
