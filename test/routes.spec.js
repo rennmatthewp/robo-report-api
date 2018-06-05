@@ -268,17 +268,8 @@ describe('API Routes', () => {
           zipcode: '90210',
         })
         .end((error, response) => {
-          response.should.have.status(201);
+          response.should.have.status(204);~
           response.should.be.json;
-          response.body.should.be.an('object');
-          response.body.should.have.property(
-            'message',
-            '1 user updated.',
-          );
-          response.body.should.have.property(
-            'userId',
-            '4',
-          );
           done();
         });
     });

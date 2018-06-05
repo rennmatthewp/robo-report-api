@@ -154,10 +154,7 @@ router.patch('/users/:id', checkAuth, (request, response) => {
           error: `${updateCount} column(s) updated. Unable to find user with id: ${id}`,
         });
       }
-      return response.status(201).json({
-        message: `${updateCount} user updated.`,
-        userId: id,
-      });
+      return response.status(204).json();
     })
     .catch(error => response.status(500).json({ error }));
 });
