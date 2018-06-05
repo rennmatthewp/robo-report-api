@@ -268,8 +268,7 @@ describe('API Routes', () => {
           zipcode: '90210',
         })
         .end((error, response) => {
-          response.should.have.status(204);~
-          response.should.be.json;
+          response.should.have.status(204);
           done();
         });
     });
